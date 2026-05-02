@@ -18442,6 +18442,73 @@
 		)
 	)
 	(symbol
+		(lib_id "power:GND")
+		(at 378.46 232.41 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "0836c5be-ce81-4189-8fc7-3df39256055a")
+		(property "Reference" "#PWR095"
+			(at 372.11 232.41 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 375.2851 232.41 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" ""
+			(at 378.46 232.41 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 378.46 232.41 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 378.46 232.41 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "194f68c7-851b-4bdb-b039-1327d2fac996")
+		)
+		(instances
+			(project "mainboard"
+				(path "/0d10df44-32de-4e15-8354-02c97578c850"
+					(reference "#PWR095")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:+1V8")
 		(at 307.34 36.83 0)
 		(unit 1)
@@ -18577,16 +18644,15 @@
 	)
 	(symbol
 		(lib_id "Connector_Generic_MountingPin:Conn_02x35_Odd_Even_MountingPin")
-		(at 388.62 191.77 180)
+		(at 386.08 189.23 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "1023e05e-8db0-4f74-b513-418f96627077")
 		(property "Reference" "J4"
-			(at 387.35 237.9401 0)
+			(at 387.35 143.0599 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18594,7 +18660,7 @@
 			)
 		)
 		(property "Value" "Conn_02x35_Odd_Even_MountingPin"
-			(at 387.35 240.3644 0)
+			(at 387.35 140.6356 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18602,7 +18668,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 388.62 191.77 0)
+			(at 386.08 189.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18611,7 +18677,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 388.62 191.77 0)
+			(at 386.08 189.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18620,7 +18686,7 @@
 			)
 		)
 		(property "Description" "Generic connectable mounting pin connector, double row, 02x35, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)"
-			(at 388.62 191.77 0)
+			(at 386.08 189.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22137,7 +22203,7 @@
 	)
 	(symbol
 		(lib_id "Connector_Generic_MountingPin:Conn_02x40_Odd_Even_MountingPin")
-		(at 339.09 196.85 180)
+		(at 336.55 194.31 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -22146,7 +22212,7 @@
 		(fields_autoplaced yes)
 		(uuid "55ef5558-a687-46fd-b616-b7f6f0ce9f13")
 		(property "Reference" "J3"
-			(at 337.82 248.1001 0)
+			(at 337.82 140.6355 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22154,7 +22220,7 @@
 			)
 		)
 		(property "Value" "Conn_02x40_Odd_Even_MountingPin"
-			(at 337.82 250.5244 0)
+			(at 337.82 143.0598 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22162,7 +22228,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 339.09 196.85 0)
+			(at 336.55 194.31 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22171,7 +22237,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 339.09 196.85 0)
+			(at 336.55 194.31 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22180,7 +22246,7 @@
 			)
 		)
 		(property "Description" "Generic connectable mounting pin connector, double row, 02x40, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)"
-			(at 339.09 196.85 0)
+			(at 336.55 194.31 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -27817,7 +27883,7 @@
 	)
 	(symbol
 		(lib_id "Connector_Generic_MountingPin:Conn_02x40_Odd_Even_MountingPin")
-		(at 284.48 196.85 180)
+		(at 281.94 194.31 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -27826,7 +27892,7 @@
 		(fields_autoplaced yes)
 		(uuid "c7d78c60-3803-4f1f-9f37-5ee2734dbc33")
 		(property "Reference" "J2"
-			(at 283.21 248.1001 0)
+			(at 283.21 140.6355 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -27834,7 +27900,7 @@
 			)
 		)
 		(property "Value" "Conn_02x40_Odd_Even_MountingPin"
-			(at 283.21 250.5244 0)
+			(at 283.21 143.0598 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -27842,7 +27908,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 284.48 196.85 0)
+			(at 281.94 194.31 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -27851,7 +27917,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 284.48 196.85 0)
+			(at 281.94 194.31 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -27860,7 +27926,7 @@
 			)
 		)
 		(property "Description" "Generic connectable mounting pin connector, double row, 02x40, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)"
-			(at 284.48 196.85 0)
+			(at 281.94 194.31 0)
 			(effects
 				(font
 					(size 1.27 1.27)
