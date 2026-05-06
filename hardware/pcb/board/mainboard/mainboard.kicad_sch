@@ -20396,6 +20396,28 @@
 			)
 		)
 	)
+	(global_label "PCIE_CLKREQ_N"
+		(shape input)
+		(at 551.18 173.99 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "bd49198c-1892-431c-9720-375f555f4ecc")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 569.0423 173.99 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "USB_DP"
 		(shape input)
 		(at 447.04 199.39 0)
@@ -21272,6 +21294,28 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "PCIE_PERST_N"
+		(shape input)
+		(at 538.48 173.99 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "dea62d4f-62ca-4d42-a27a-3dd652fbb7ae")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 522.0692 173.99 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
 				(hide yes)
 			)
 		)
