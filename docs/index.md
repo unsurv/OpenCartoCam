@@ -1,5 +1,12 @@
 # OpenCartoCam
 
+``` {toctree}
+:hidden:
+:glob:
+
+hardware/*.md
+```
+
 ## What is it
 
 OpenCartoCam is an open source 360-degree camera that leverages edge computing to support cartographing the world. Equipped with precise positioning systems and hardware-accelerated object detection, it enables semi-automatic mapping and categorization while maintaining a compact form factor.
