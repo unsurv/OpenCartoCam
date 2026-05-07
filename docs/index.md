@@ -4,7 +4,7 @@
 :hidden:
 :glob:
 
-hardware/*.md
+hardware/hardware
 ```
 
 ## What is it
@@ -24,7 +24,7 @@ Status **in development**
 
 ## TODOs
 
-- board evaluation
+- carrier board evaluation
 - Yocto software integration
 - Sensor integration (Gyro, GNSS)
 
