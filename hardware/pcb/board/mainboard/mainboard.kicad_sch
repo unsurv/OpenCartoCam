@@ -16026,9 +16026,9 @@
 		)
 		(uuid "50c6ac53-a316-42db-bd07-06502585f034")
 	)
-	(text "PWR"
+	(text "PWR + USB CONN"
 		(exclude_from_sim no)
-		(at 42.418 386.334 0)
+		(at 44.45 386.842 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -16586,6 +16586,28 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "H_BB_SPI_DQ0"
+		(shape input)
+		(at 389.89 238.76 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "155c175a-4e40-4d7b-9baa-de8f01a126df")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 373.2372 238.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
 				(hide yes)
 			)
 		)
@@ -19186,6 +19208,28 @@
 			)
 		)
 	)
+	(global_label "H_BB_SPI_CLK"
+		(shape input)
+		(at 389.89 243.84 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "80c010a5-9a25-4157-bc30-4fb5dd648c30")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 373.4791 243.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "CAM0_MDN0"
 		(shape input)
 		(at 453.39 328.93 0)
@@ -19358,6 +19402,28 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "H_BB_SPI_DQ1"
+		(shape input)
+		(at 389.89 241.3 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "863bfeaf-0a89-4131-92f6-2404d73249fa")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 373.2372 241.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
 				(hide yes)
 			)
 		)
