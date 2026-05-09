@@ -3,12 +3,16 @@
 	(generator "pcbnew")
 	(generator_version "8.0")
 	(general
-		(thickness 1.6)
+		(thickness 1.635)
 		(legacy_teardrops no)
 	)
 	(paper "A4")
 	(layers
 		(0 "F.Cu" signal)
+		(1 "In1.Cu" power "GND0")
+		(2 "In2.Cu" signal "HS Signal")
+		(3 "In3.Cu" power "PWR")
+		(4 "In4.Cu" power "GND1")
 		(31 "B.Cu" signal)
 		(32 "B.Adhes" user "B.Adhesive")
 		(33 "F.Adhes" user "F.Adhesive")
@@ -39,6 +43,89 @@
 		(58 "User.9" user)
 	)
 	(setup
+		(stackup
+			(layer "F.SilkS"
+				(type "Top Silk Screen")
+			)
+			(layer "F.Paste"
+				(type "Top Solder Paste")
+			)
+			(layer "F.Mask"
+				(type "Top Solder Mask")
+				(thickness 0.01)
+			)
+			(layer "F.Cu"
+				(type "copper")
+				(thickness 0.035)
+			)
+			(layer "dielectric 1"
+				(type "prepreg")
+				(thickness 0.23)
+				(material "FR4")
+				(epsilon_r 4.25)
+				(loss_tangent 0.02)
+			)
+			(layer "In1.Cu"
+				(type "copper")
+				(thickness 0.035)
+			)
+			(layer "dielectric 2"
+				(type "core")
+				(thickness 0.3)
+				(material "FR4")
+				(epsilon_r 4.5)
+				(loss_tangent 0.02)
+			)
+			(layer "In2.Cu"
+				(type "copper")
+				(thickness 0.035)
+			)
+			(layer "dielectric 3"
+				(type "prepreg")
+				(thickness 0.345)
+				(material "FR4")
+				(epsilon_r 4.25)
+				(loss_tangent 0.02)
+			)
+			(layer "In3.Cu"
+				(type "copper")
+				(thickness 0.035)
+			)
+			(layer "dielectric 4"
+				(type "core")
+				(thickness 0.3)
+				(material "FR4")
+				(epsilon_r 4.5)
+				(loss_tangent 0.02)
+			)
+			(layer "In4.Cu"
+				(type "copper")
+				(thickness 0.035)
+			)
+			(layer "dielectric 5"
+				(type "prepreg")
+				(thickness 0.23)
+				(material "FR4")
+				(epsilon_r 4.25)
+				(loss_tangent 0.02)
+			)
+			(layer "B.Cu"
+				(type "copper")
+				(thickness 0.035)
+			)
+			(layer "B.Mask"
+				(type "Bottom Solder Mask")
+				(thickness 0.01)
+			)
+			(layer "B.Paste"
+				(type "Bottom Solder Paste")
+			)
+			(layer "B.SilkS"
+				(type "Bottom Silk Screen")
+			)
+			(copper_finish "None")
+			(dielectric_constraints no)
+		)
 		(pad_to_mask_clearance 0)
 		(allow_soldermask_bridges_in_footprints no)
 		(pcbplotparams
@@ -1683,7 +1770,7 @@
 	(footprint "unsurv_offline_pcb_footprints:DF40_3.0_80"
 		(layer "F.Cu")
 		(uuid "4646293c-2bb8-4836-ac28-784b2df5ee92")
-		(at 78.5 52.3 -90)
+		(at 125.25 76.5 -90)
 		(property "Reference" "J2"
 			(at 8.83 -2.63 -90)
 			(unlocked yes)
@@ -4053,7 +4140,7 @@
 	(footprint "unsurv_offline_pcb_footprints:DF40_3.0_70"
 		(layer "F.Cu")
 		(uuid "719a54aa-6e47-4615-b2a9-78b12c7f2330")
-		(at 85.69 67.17)
+		(at 132.44 91.37)
 		(property "Reference" "J4"
 			(at 7.21 -2.52 0)
 			(unlocked yes)
@@ -5181,7 +5268,7 @@
 	(footprint "unsurv_offline_pcb_footprints:DF40_3.0_80"
 		(layer "F.Cu")
 		(uuid "781a55ac-588b-45e6-855f-4c21d8d6b17b")
-		(at 100 56.04 -90)
+		(at 146.75 80.24 -90)
 		(property "Reference" "J3"
 			(at 8.83 -2.63 -90)
 			(unlocked yes)
@@ -7148,7 +7235,7 @@
 		(descr "Diodes Incorporated PowerDI3333-8, Plastic Dual Flat No Lead Package, 3.3x3.3x0.8mm Body, https://www.diodes.com/assets/Package-Files/PowerDI3333-8.pdf")
 		(tags "PowerDI 0.65")
 		(property "Reference" "Q3"
-			(at 0 -2.65 360)
+			(at 0 -2.65 0)
 			(layer "F.SilkS")
 			(uuid "846f21ea-425f-43f8-b06c-0f3447f4a860")
 			(effects
@@ -7159,7 +7246,7 @@
 			)
 		)
 		(property "Value" "DMN3008SFG"
-			(at 0 2.65 360)
+			(at 0 2.65 0)
 			(layer "F.Fab")
 			(uuid "49911620-9aa7-47c3-8aa1-7a409fccd318")
 			(effects
@@ -7366,7 +7453,7 @@
 			(uuid "5b77ca6a-d37f-4a19-a3c3-373c48facdd0")
 		)
 		(fp_text user "${REFERENCE}"
-			(at 0 0 360)
+			(at 0 0 0)
 			(layer "F.Fab")
 			(uuid "a2cb20b4-0e7e-4def-83be-f444ec8b9340")
 			(effects
@@ -9947,7 +10034,7 @@
 		(descr "Diodes Incorporated PowerDI3333-8, Plastic Dual Flat No Lead Package, 3.3x3.3x0.8mm Body, https://www.diodes.com/assets/Package-Files/PowerDI3333-8.pdf")
 		(tags "PowerDI 0.65")
 		(property "Reference" "Q1"
-			(at 0 -2.65 360)
+			(at 0 -2.65 0)
 			(layer "F.SilkS")
 			(uuid "af62a562-0eba-4e8e-8596-965310b2cab1")
 			(effects
@@ -9958,7 +10045,7 @@
 			)
 		)
 		(property "Value" "DMN3008SFG"
-			(at 0 2.65 360)
+			(at 0 2.65 0)
 			(layer "F.Fab")
 			(uuid "b9469230-c616-4904-b69d-8b08e6b942f1")
 			(effects
@@ -10165,7 +10252,7 @@
 			(uuid "8cbbc9b5-115e-4752-bd64-e83775f758e3")
 		)
 		(fp_text user "${REFERENCE}"
-			(at 0 0 360)
+			(at 0 0 0)
 			(layer "F.Fab")
 			(uuid "3eb3e523-a783-4f05-9682-26295b142673")
 			(effects
@@ -10545,8 +10632,8 @@
 		)
 	)
 	(gr_rect
-		(start 73.75 26.1)
-		(end 103.75 73.1)
+		(start 120.5 50.3)
+		(end 150.5 97.3)
 		(stroke
 			(width 0.1)
 			(type default)
