@@ -1,4 +1,4 @@
-25052818338646422
+25056375046744914
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -101374,6 +101374,13 @@ DF40_3.0_80
 84
 81
 unsurv_offline_pcb_footprints
+DFN-14-1EP_3x3mm_P0.4mm_EP1.80x2.70mm
+DD Package; 14-Lead Plastic DFN (3mm x 3mm) (http://pdfserv.maximintegrated.com/land_patterns/90-0063.PDF)
+DFN 0.40
+0
+19
+15
+unsurv_offline_pcb_footprints
 DLP11SN900HL2L_hand_solder
 
 
@@ -101597,6 +101604,13 @@ circular_NFC_386uH_less_segments
 0
 2
 2
+unsurv_offline_pcb_footprints
+cursed_TI-QFN9_TPS61235
+UQFN, 16 Pin (http://ww1.microchip.com/downloads/en/DeviceDoc/16L_UQFN_4x4x0_5mm_JQ_C04257A.pdf), generated with kicad-footprint-generator ipc_noLead_generator.py
+UQFN NoLead
+0
+10
+6
 unsurv_offline_pcb_footprints
 https___shop.unsurv.org
 
