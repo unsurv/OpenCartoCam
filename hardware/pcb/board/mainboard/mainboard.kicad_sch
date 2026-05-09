@@ -7305,6 +7305,178 @@
 				)
 			)
 		)
+		(symbol "Device:Battery_Cell"
+			(pin_numbers hide)
+			(pin_names
+				(offset 0) hide)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "BT"
+				(at 2.54 2.54 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Value" "Battery_Cell"
+				(at 2.54 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 1.524 90)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 1.524 90)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Single-cell battery"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "battery cell"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "Battery_Cell_0_1"
+				(rectangle
+					(start -2.286 1.778)
+					(end 2.286 1.524)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(rectangle
+					(start -1.524 1.016)
+					(end 1.524 0.508)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 0.762) (xy 0 0)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 1.778) (xy 0 2.54)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.762 3.048) (xy 1.778 3.048)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.27 3.556) (xy 1.27 2.54)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "Battery_Cell_1_1"
+				(pin passive line
+					(at 0 5.08 270)
+					(length 2.54)
+					(name "+"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -2.54 90)
+					(length 2.54)
+					(name "-"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
 		(symbol "Device:C_Small"
 			(pin_numbers hide)
 			(pin_names
@@ -9881,295 +10053,6 @@
 						)
 					)
 					(number "5"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-		)
-		(symbol "dk_Battery-Holders-Clips-Contacts:BS-7"
-			(pin_numbers hide)
-			(pin_names
-				(offset 1.016)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "BAT"
-				(at -1.27 3.81 0)
-				(effects
-					(font
-						(size 1.524 1.524)
-					)
-					(justify right)
-				)
-			)
-			(property "Value" "BS-7"
-				(at -1.27 -3.81 0)
-				(effects
-					(font
-						(size 1.524 1.524)
-					)
-					(justify right)
-				)
-			)
-			(property "Footprint" "digikey-footprints:Battery_Holder_Coin_2032_BS-7"
-				(at 5.08 5.08 0)
-				(effects
-					(font
-						(size 1.524 1.524)
-					)
-					(justify left)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "http://www.memoryprotectiondevices.com/datasheets/BS-7-datasheet.pdf"
-				(at 5.08 7.62 90)
-				(effects
-					(font
-						(size 1.524 1.524)
-					)
-					(justify left)
-					(hide yes)
-				)
-			)
-			(property "Description" "BATTERY HOLDER COIN 20MM PC PIN"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Digi-Key_PN" "BS-7-ND"
-				(at 5.08 10.16 0)
-				(effects
-					(font
-						(size 1.524 1.524)
-					)
-					(justify left)
-					(hide yes)
-				)
-			)
-			(property "MPN" "BS-7"
-				(at 5.08 12.7 0)
-				(effects
-					(font
-						(size 1.524 1.524)
-					)
-					(justify left)
-					(hide yes)
-				)
-			)
-			(property "Category" "Battery Products"
-				(at 5.08 15.24 0)
-				(effects
-					(font
-						(size 1.524 1.524)
-					)
-					(justify left)
-					(hide yes)
-				)
-			)
-			(property "Family" "Battery Holders, Clips, Contacts"
-				(at 5.08 17.78 0)
-				(effects
-					(font
-						(size 1.524 1.524)
-					)
-					(justify left)
-					(hide yes)
-				)
-			)
-			(property "DK_Datasheet_Link" "http://www.memoryprotectiondevices.com/datasheets/BS-7-datasheet.pdf"
-				(at 5.08 20.32 0)
-				(effects
-					(font
-						(size 1.524 1.524)
-					)
-					(justify left)
-					(hide yes)
-				)
-			)
-			(property "DK_Detail_Page" "/product-detail/en/mpd-memory-protection-devices/BS-7/BS-7-ND/389447"
-				(at 5.08 22.86 0)
-				(effects
-					(font
-						(size 1.524 1.524)
-					)
-					(justify left)
-					(hide yes)
-				)
-			)
-			(property "Description_1" "BATTERY HOLDER COIN 20MM PC PIN"
-				(at 5.08 25.4 0)
-				(effects
-					(font
-						(size 1.524 1.524)
-					)
-					(justify left)
-					(hide yes)
-				)
-			)
-			(property "Manufacturer" "MPD (Memory Protection Devices)"
-				(at 5.08 27.94 0)
-				(effects
-					(font
-						(size 1.524 1.524)
-					)
-					(justify left)
-					(hide yes)
-				)
-			)
-			(property "Status" "Active"
-				(at 5.08 30.48 0)
-				(effects
-					(font
-						(size 1.524 1.524)
-					)
-					(justify left)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "BS-7-ND"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "BS-7_1_1"
-				(polyline
-					(pts
-						(xy 0 -2.54) (xy 0 -1.905)
-					)
-					(stroke
-						(width 0)
-						(type solid)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 1.905) (xy 0 2.54)
-					)
-					(stroke
-						(width 0)
-						(type solid)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 1.27 -1.905) (xy -1.27 -1.905)
-					)
-					(stroke
-						(width 0)
-						(type solid)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 1.27 0.635) (xy -1.27 0.635)
-					)
-					(stroke
-						(width 0)
-						(type solid)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 1.27 2.286) (xy 1.27 3.302)
-					)
-					(stroke
-						(width 0)
-						(type solid)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 1.778 2.794) (xy 0.762 2.794)
-					)
-					(stroke
-						(width 0)
-						(type solid)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 2.54 -0.635) (xy -2.54 -0.635)
-					)
-					(stroke
-						(width 0)
-						(type solid)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 2.54 1.905) (xy -2.54 1.905)
-					)
-					(stroke
-						(width 0)
-						(type solid)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(pin power_out line
-					(at 0 -5.08 90)
-					(length 2.54)
-					(name "~"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "Neg"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin power_out line
-					(at 0 5.08 270)
-					(length 2.54)
-					(name "~"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "Pos"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -14683,7 +14566,7 @@
 	)
 	(wire
 		(pts
-			(xy 469.9 49.53) (xy 469.9 50.8)
+			(xy 469.9 48.26) (xy 469.9 50.8)
 		)
 		(stroke
 			(width 0)
@@ -16313,7 +16196,7 @@
 	)
 	(wire
 		(pts
-			(xy 469.9 38.1) (xy 469.9 39.37)
+			(xy 469.9 38.1) (xy 469.9 40.64)
 		)
 		(stroke
 			(width 0)
@@ -18343,7 +18226,7 @@
 	)
 	(text "palceholder connector used here"
 		(exclude_from_sim no)
-		(at 242.824 101.854 0)
+		(at 233.934 122.174 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -18753,7 +18636,7 @@
 	)
 	(global_label "BATTERY_THERM"
 		(shape input)
-		(at 241.3 87.63 90)
+		(at 232.41 107.95 90)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -18763,7 +18646,7 @@
 		)
 		(uuid "07996eb1-3d41-4d96-a7ab-1f66e583fe25")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 241.3 69.7073 90)
+			(at 232.41 90.0273 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -21525,7 +21408,7 @@
 	)
 	(global_label "ID {slash} AUTH"
 		(shape input)
-		(at 243.84 87.63 90)
+		(at 234.95 107.95 90)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -21535,7 +21418,7 @@
 		)
 		(uuid "6c11400d-c3b1-4c7a-9837-41e68abc9cbf")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 243.84 74.7871 90)
+			(at 234.95 95.1071 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -21679,7 +21562,7 @@
 	)
 	(global_label "B+"
 		(shape input)
-		(at 238.76 87.63 90)
+		(at 229.87 107.95 90)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -21689,7 +21572,7 @@
 		)
 		(uuid "72ae0437-2cfc-45e7-895d-2cef1799ffcc")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 238.76 81.8024 90)
+			(at 229.87 102.1224 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -24275,7 +24158,7 @@
 	)
 	(global_label "B-"
 		(shape input)
-		(at 246.38 87.63 90)
+		(at 237.49 107.95 90)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -24285,7 +24168,7 @@
 		)
 		(uuid "d682e9a6-65bc-4895-84d3-aa5c13f74f80")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 246.38 81.8024 90)
+			(at 237.49 102.1224 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -26609,7 +26492,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_SO:VSSOP-8_2.3x2mm_P0.5mm"
+		(property "Footprint" "Package_DFN_QFN:Texas_S-PVQFN-N14"
 			(at 311.404 398.272 0)
 			(effects
 				(font
@@ -33512,6 +33395,75 @@
 			(project "mainboard"
 				(path "/0d10df44-32de-4e15-8354-02c97578c850"
 					(reference "#PWR020")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:Battery_Cell")
+		(at 469.9 45.72 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "60b3b2f6-a200-49bb-aebe-cb27f6b97e87")
+		(property "Reference" "BT1"
+			(at 456.184 39.4857 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "Battery_Cell"
+			(at 456.184 41.91 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Battery:BatteryHolder_Keystone_2998_1x6.8mm"
+			(at 469.9 44.196 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 469.9 44.196 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Single-cell battery"
+			(at 469.9 45.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "17b605b4-79c7-4740-8c08-e43dd9ed0ea2")
+		)
+		(pin "1"
+			(uuid "c18e5726-ee26-4bf5-a982-36aed8ff44ab")
+		)
+		(instances
+			(project ""
+				(path "/0d10df44-32de-4e15-8354-02c97578c850"
+					(reference "BT1")
 					(unit 1)
 				)
 			)
@@ -43433,168 +43385,6 @@
 		)
 	)
 	(symbol
-		(lib_id "dk_Battery-Holders-Clips-Contacts:BS-7")
-		(at 469.9 44.45 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "d982bf75-77dd-4b5b-b0e3-905e87dc2e37")
-		(property "Reference" "BAT1"
-			(at 473.075 42.6525 0)
-			(effects
-				(font
-					(size 1.524 1.524)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "BS-7"
-			(at 473.075 45.4854 0)
-			(effects
-				(font
-					(size 1.524 1.524)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "digikey-footprints:Battery_Holder_Coin_2032_BS-7"
-			(at 474.98 39.37 0)
-			(effects
-				(font
-					(size 1.524 1.524)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "http://www.memoryprotectiondevices.com/datasheets/BS-7-datasheet.pdf"
-			(at 474.98 36.83 90)
-			(effects
-				(font
-					(size 1.524 1.524)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Description" "BATTERY HOLDER COIN 20MM PC PIN"
-			(at 469.9 44.45 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Digi-Key_PN" "BS-7-ND"
-			(at 474.98 34.29 0)
-			(effects
-				(font
-					(size 1.524 1.524)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "MPN" "BS-7"
-			(at 474.98 31.75 0)
-			(effects
-				(font
-					(size 1.524 1.524)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Category" "Battery Products"
-			(at 474.98 29.21 0)
-			(effects
-				(font
-					(size 1.524 1.524)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Family" "Battery Holders, Clips, Contacts"
-			(at 474.98 26.67 0)
-			(effects
-				(font
-					(size 1.524 1.524)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "DK_Datasheet_Link" "http://www.memoryprotectiondevices.com/datasheets/BS-7-datasheet.pdf"
-			(at 474.98 24.13 0)
-			(effects
-				(font
-					(size 1.524 1.524)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "DK_Detail_Page" "/product-detail/en/mpd-memory-protection-devices/BS-7/BS-7-ND/389447"
-			(at 474.98 21.59 0)
-			(effects
-				(font
-					(size 1.524 1.524)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Description_1" "BATTERY HOLDER COIN 20MM PC PIN"
-			(at 474.98 19.05 0)
-			(effects
-				(font
-					(size 1.524 1.524)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Manufacturer" "MPD (Memory Protection Devices)"
-			(at 474.98 16.51 0)
-			(effects
-				(font
-					(size 1.524 1.524)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Status" "Active"
-			(at 474.98 13.97 0)
-			(effects
-				(font
-					(size 1.524 1.524)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(pin "Pos"
-			(uuid "f8239822-978e-4597-9ed5-2e18606c4a17")
-		)
-		(pin "Neg"
-			(uuid "61a96c01-95ef-4275-9ca9-5ba7c9fc8bdb")
-		)
-		(instances
-			(project ""
-				(path "/0d10df44-32de-4e15-8354-02c97578c850"
-					(reference "BAT1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:C_Small")
 		(at 95.25 144.78 0)
 		(unit 1)
@@ -44077,7 +43867,7 @@
 	)
 	(symbol
 		(lib_id "Connector:Conn_01x04_Pin")
-		(at 241.3 92.71 90)
+		(at 232.41 113.03 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -44086,7 +43876,7 @@
 		(fields_autoplaced yes)
 		(uuid "e3961fa6-7230-4830-9c39-5aafeeaea7f3")
 		(property "Reference" "J2"
-			(at 242.57 94.3793 90)
+			(at 233.68 114.6993 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -44094,7 +43884,7 @@
 			)
 		)
 		(property "Value" "BATTERY_Insta_360_Ace_Pro"
-			(at 242.57 96.8036 90)
+			(at 233.68 117.1236 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -44102,7 +43892,7 @@
 			)
 		)
 		(property "Footprint" "Connector_PinHeader_2.00mm:PinHeader_1x04_P2.00mm_Vertical"
-			(at 241.3 92.71 0)
+			(at 232.41 113.03 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -44111,7 +43901,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 241.3 92.71 0)
+			(at 232.41 113.03 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -44120,7 +43910,7 @@
 			)
 		)
 		(property "Description" "Generic connector, single row, 01x04, script generated"
-			(at 241.3 92.71 0)
+			(at 232.41 113.03 0)
 			(effects
 				(font
 					(size 1.27 1.27)
