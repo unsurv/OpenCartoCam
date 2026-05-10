@@ -27,6 +27,7 @@ Status **in development**
 - carrier board evaluation
 - Yocto software integration
 - Sensor integration (Gyro, GNSS)
+- find blade battery connector with 2 mm pitch and create daughterboard for slim battery fit
 
 ## Acknoledgements
 
