@@ -1,4 +1,4 @@
-25056375046744914
+25058153578429110
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -49559,6 +49559,13 @@ USB_B USB B vertical female connector
 0
 6
 5
+Connector_USB
+USB_C_CONN_1054550101_MOL
+
+1054550101 
+0
+24
+24
 Connector_USB
 USB_C_Plug_JAE_DX07P024AJ1
 Universal Serial Bus (USB) Shielded I/O Plug, Type C, Right Angle, Surface Mount, https://www.jae.com/en/searchfilter/?topics_keyword=DX07P024AJ1&mainItemSelect=1
@@ -101610,7 +101617,7 @@ UQFN, 16 Pin (http://ww1.microchip.com/downloads/en/DeviceDoc/16L_UQFN_4x4x0_5mm
 UQFN NoLead
 0
 10
-6
+9
 unsurv_offline_pcb_footprints
 https___shop.unsurv.org
 
