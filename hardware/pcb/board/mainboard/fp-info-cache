@@ -1,4 +1,4 @@
-25061710829976476
+25065269642017823
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -99526,6 +99526,13 @@ RF_SMA_Receptical_Vertical_CONSMA001-SMD-G
 5
 2
 digikey-footprints
+RF_SMA_Receptical_Vertical_CONSMA002-SMD-G
+
+
+0
+3
+2
+digikey-footprints
 RF_SMA_RightAngle_5-1814400-1
 http://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv&DocNm=1814400&DocType=Customer+Drawing&DocLang=English
 
@@ -101513,6 +101520,13 @@ QFN DFN_QFN
 0
 18
 17
+unsurv_offline_pcb_footprints
+RF_SMA_Receptical_Vertical_CONSMA002-SMD-G
+
+
+0
+3
+2
 unsurv_offline_pcb_footprints
 SFW15R-1STE1LF
 

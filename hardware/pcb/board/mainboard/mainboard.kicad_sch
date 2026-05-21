@@ -35532,7 +35532,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "unsurv_offline_pcb_footprints:MOLEX_SMA_0732511143"
+		(property "Footprint" "unsurv_offline_pcb_footprints:RF_SMA_Receptical_Vertical_CONSMA002-SMD-G"
 			(at 367.03 113.03 0)
 			(effects
 				(font
