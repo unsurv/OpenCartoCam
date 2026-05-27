@@ -76,9 +76,9 @@
           "width": 0.0
         },
         {
-          "gap": 0.145,
+          "gap": 0.13,
           "via_gap": 0.0,
-          "width": 0.16
+          "width": 0.18
         }
       ],
       "drc_exclusions": [],
@@ -220,6 +220,8 @@
         0.1,
         0.125,
         0.2,
+        0.255,
+        0.32,
         0.395,
         0.4,
         1.0,
@@ -528,9 +530,9 @@
       {
         "bus_width": 12,
         "clearance": 0.2,
-        "diff_pair_gap": 0.25,
+        "diff_pair_gap": 0.195,
         "diff_pair_via_gap": 0.25,
-        "diff_pair_width": 0.2,
+        "diff_pair_width": 0.165,
         "line_style": 0,
         "microvia_diameter": 0.3,
         "microvia_drill": 0.1,
@@ -679,7 +681,7 @@
         "uuid": "0d10df44-32de-4e15-8354-02c97578c850"
       }
     ],
-    "used_designators": "J2,#PWR150",
+    "used_designators": "",
     "variants": []
   },
   "sheets": [
