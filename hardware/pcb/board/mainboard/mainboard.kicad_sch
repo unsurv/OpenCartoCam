@@ -33136,7 +33136,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Inductor_SMD:L_0603_1608Metric"
+		(property "Footprint" "Inductor_SMD:L_Coilcraft_XAL5020-XXX"
 			(at 49.53 146.05 0)
 			(hide yes)
 			(show_name no)
@@ -33169,7 +33169,7 @@
 				)
 			)
 		)
-		(property "MFN" "SPM6530T-1R0M120"
+		(property "MFN" "EXLA1V0703-1R0-R"
 			(at 49.53 146.05 90)
 			(hide yes)
 			(show_name no)
