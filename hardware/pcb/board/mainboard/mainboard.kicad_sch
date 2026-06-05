@@ -16056,6 +16056,16 @@
 		)
 		(uuid "37157b3f-428a-41b0-b2e0-732a9c609ab3")
 	)
+	(text "# TODO ON/OFF button here?"
+		(exclude_from_sim no)
+		(at 90.932 163.068 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "376a0278-e6cc-484b-85c9-305cbf686603")
+	)
 	(text "# TODO edit charge current for dual 18350"
 		(exclude_from_sim no)
 		(at 108.966 124.46 0)
