@@ -42693,7 +42693,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Package_DFN_QFN:HVQFN-24-1EP_4x4mm_P0.5mm_EP2.6x2.6mm_ThermalVias"
+		(property "Footprint" "unsurv_offline_pcb_footprints:HVQFN-24-1EP_4x4mm_P0.5mm_EP2.6x2.6mm_0.25drill_ThermalVias"
 			(at 68.58 64.77 0)
 			(hide yes)
 			(show_name no)
