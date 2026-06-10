@@ -17,11 +17,11 @@ All hardware is developed using open toolchains:
 
 ```
 
-``` {image} schematic.png
+``` {image} schematic.PNG
 
 ```
 
-``` {image} PCB_view.png
+``` {image} PCB_view.PNG
 
 ```
 
