@@ -8,3 +8,11 @@ The carrier board offers the following features:
 - two USB-C receptables one for USB PD 9V3A and the other exposing a shell to the HAILO-SOM.
 - [ublox F10-N](https://www.u-blox.com/en/product/neo-f10n-module) multiband GNSS receiver with L5 reception to improve urban performance.
 - battery and system power management (see[power management](./power.md))
+
+``` {image} 3D_preview_front.PNG
+
+```
+
+``` {image} 3D_preview_back.PNG
+
+```
