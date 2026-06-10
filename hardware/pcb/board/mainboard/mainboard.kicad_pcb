@@ -30955,7 +30955,7 @@
 		(descr "Resistor SMD 0603 (1608 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: IPC-SM-782 page 72, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "resistor")
 		(property "Reference" "R8"
-			(at 0 -1.7 0)
+			(at -0.05 -1.25 0)
 			(layer "B.SilkS")
 			(uuid "64f19c39-c5b3-428d-94e5-931492a97467")
 			(effects
@@ -31282,7 +31282,7 @@
 		(descr "SMD pad as test Point, diameter 1.5mm")
 		(tags "test point SMD pad")
 		(property "Reference" "TP19"
-			(at 0 1.648 180)
+			(at 0 -1.74 180)
 			(layer "B.SilkS")
 			(uuid "8989d302-0821-42bb-ae4b-928bcbecf487")
 			(effects
@@ -31396,7 +31396,7 @@
 		(descr "LED SMD 0603 (1608 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: http://www.tortai-tech.com/upload/download/2011102023233369053.pdf), generated with kicad-footprint-generator")
 		(tags "LED")
 		(property "Reference" "D8"
-			(at -2.6 0 0)
+			(at -2.45268 -0.137566 0)
 			(layer "B.SilkS")
 			(uuid "94767ee5-556b-4534-ad33-bc57bdb93243")
 			(effects
@@ -31859,7 +31859,7 @@
 		(descr "Resistor SMD 0603 (1608 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: IPC-SM-782 page 72, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "resistor")
 		(property "Reference" "R32"
-			(at 3 0 0)
+			(at -2.65268 0.562434 0)
 			(layer "B.SilkS")
 			(uuid "d5619e14-571c-47c1-807e-3504e018f99f")
 			(effects
@@ -32072,7 +32072,7 @@
 		(descr "SMD pad as test Point, diameter 1.5mm")
 		(tags "test point SMD pad")
 		(property "Reference" "TP17"
-			(at 0 1.648 180)
+			(at 0 -1.7 180)
 			(layer "B.SilkS")
 			(uuid "79d3dae8-df9a-41ae-8534-2e43581c2256")
 			(effects
@@ -32642,7 +32642,7 @@
 		(descr "LED SMD 0603 (1608 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: http://www.tortai-tech.com/upload/download/2011102023233369053.pdf), generated with kicad-footprint-generator")
 		(tags "LED")
 		(property "Reference" "D4"
-			(at -0.0125 -1.7 0)
+			(at 2.45 -0.35 0)
 			(layer "B.SilkS")
 			(uuid "2f56d382-a700-4a33-b9a8-cdc024992530")
 			(effects
@@ -34394,7 +34394,7 @@
 		(descr "SMD pad as test Point, diameter 1.5mm")
 		(tags "test point SMD pad")
 		(property "Reference" "TP8"
-			(at 0 2.1 90)
+			(at 0.02 2.4 180)
 			(layer "B.SilkS")
 			(uuid "02f6a442-8561-4262-ba6b-a652a1963e5e")
 			(effects
@@ -34622,7 +34622,7 @@
 		(descr "SMD pad as test Point, diameter 1.5mm")
 		(tags "test point SMD pad")
 		(property "Reference" "TP5"
-			(at 0 1.648 180)
+			(at 2.42 0.02 180)
 			(layer "B.SilkS")
 			(uuid "5a909c5d-b54d-4df2-89aa-24163d568d77")
 			(effects
@@ -35063,7 +35063,7 @@
 		(descr "LED SMD 0603 (1608 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: http://www.tortai-tech.com/upload/download/2011102023233369053.pdf), generated with kicad-footprint-generator")
 		(tags "LED")
 		(property "Reference" "D3"
-			(at 0.0125 1.7 0)
+			(at -2.45 -0.5 0)
 			(layer "B.SilkS")
 			(uuid "80f973ca-7be1-4891-bc9e-945621301498")
 			(effects
@@ -35411,7 +35411,7 @@
 		(uuid "c7fd5173-c7ae-443c-b585-a52c1336a618")
 		(at 152.449839 127.196501 90)
 		(property "Reference" "BT2"
-			(at 0.01 18.42 270)
+			(at 12.526501 21.380161 270)
 			(unlocked yes)
 			(layer "B.SilkS")
 			(uuid "41fa2f09-c460-4a51-a7b6-3fda8c054135")
@@ -35565,6 +35565,7 @@
 		)
 		(embedded_fonts no)
 		(model "${KICAD8_3DMODEL_DIR}/imported/keystone_dual_18350.STEP"
+			(hide yes)
 			(offset
 				(xyz 0 9.5 0)
 			)
@@ -36358,7 +36359,7 @@
 		(descr "Resistor SMD 0603 (1608 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: IPC-SM-782 page 72, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "resistor")
 		(property "Reference" "R12"
-			(at 0 -1.7 0)
+			(at 2.65 -0.45 0)
 			(layer "B.SilkS")
 			(uuid "12de9a6b-293e-46a3-826e-07cb73afd55d")
 			(effects
