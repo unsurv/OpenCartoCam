@@ -826,7 +826,7 @@
         "uuid": "0d10df44-32de-4e15-8354-02c97578c850"
       }
     ],
-    "used_designators": "TP25-26,#PWR117-119",
+    "used_designators": "R38-39,#PWR120,SW1,S1",
     "variants": []
   },
   "sheets": [
