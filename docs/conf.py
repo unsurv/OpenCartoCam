@@ -23,3 +23,5 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '.venv']
 
 html_theme = 'furo'
 html_static_path = ['_static']
+
+myst_heading_anchors = 5

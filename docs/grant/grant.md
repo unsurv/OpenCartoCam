@@ -11,26 +11,27 @@ Development of the physical systems, from PCB design to camera integration and s
 - buy devboard & setting it up (expense + work) ✅
   - bought [HAILO-15 dev board](https://www.solid-run.com/embedded-industrial-iot/hummingboard-hailo-15-aiot-sbc/)
 - Daughterboard connection present ✅
-  - see .[img](./_static/DF40.PNG)
+  - see [img](#carrier-board-connection)
 - Power management ✅
-  - see lefthand side of [schematic](../hardware/schematic.PNG)
-  - see center area of [PCB](../hardware/PCB_view.PNG)
+  - see lefthand side of [schematic](#schematic)
+  - see center area of [PCB](#pcb-view)
 - Battery support added ✅
-  - see [PCB backside](../hardware/3D_preview_back.PNG)
-  - see [BQ25606 schematic](../hardware/schematic.PNG)
+  - see [PCB backside](#3d-preview-back)
+  - see [BQ25606 schematic](#schematic)
 - External connections (USB, antenna, camera) ✅
-  - see [3D view front](../hardware/3D_preview_front.PNG)
-  - see relevant parts of the [schematic]((../hardware/schematic.PNG))
+  - see [3D view front](#3d-preview-front)
+  - see relevant parts of the [schematic](#schematic)
 - PCB outline defined ✅
-  - see [3D](../hardware/3D_preview_front.PNG)
+  - see [3D](#3d-preview-front)
 - Camera connections ✅
-  - see bottom right for [FPC connections](../hardware/schematic.PNG)
+  - see bottom right for [FPC connections](#schematic)
 - Prototype assembly
 - Debug connections ✅
-  - see testpoints [schematic](../hardware/schematic.PNG)
-  - see secondary [USB receptable](../hardware/schematic.PNG) for shell access
+  - see testpoints [schematic](#schematic)
+  - see secondary [USB receptable](#schematic) for shell access
 - SD card present ✅
-  - bottom right in [schematic]see secondary [USB receptable](../hardware/schematic.PNG)
+  - bottom right in [schematic](#schematic)
+  - see [PCB backside](#3d-preview-back)
 - IMX219 driver support on development board
 - Customized Yocto Linux running on dev board
 - Prototype 3D case
@@ -64,3 +65,35 @@ Tasks supporting data collection, preparation, and documentation.
 - Beta release
 - Process feedback from security audit and accessibility scan
 - Final release with updated documentation
+
+## Images
+
+### carrier board connection
+
+``` {image} ./_static/DF40.PNG
+
+```
+
+### schematic
+
+``` {image} ../hardware/_static/schematic.PNG
+
+```
+
+### PCB view
+
+``` {image} ../hardware/_static/PCB_view.PNG
+
+```
+
+## 3D preview front
+
+``` {image} ../hardware/_static/3D_preview_front.PNG
+
+```
+
+## 3D preview back
+
+``` {image} ../hardware/_static/3D_preview_back.PNG
+
+```
