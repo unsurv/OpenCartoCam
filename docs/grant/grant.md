@@ -2,7 +2,7 @@
 
 Initial work of this project has been supported by a grant from [nlnet](https://nlnet.nl/project/OpenCartoCam/)
 
-This documents is used to track milestone.
+This documents is used to track milestones.
 
 ## Hardware Development
 
