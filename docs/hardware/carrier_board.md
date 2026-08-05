@@ -9,10 +9,10 @@ The carrier board offers the following features:
 - [ublox F10-N](https://www.u-blox.com/en/product/neo-f10n-module) multiband GNSS receiver with L5 reception to improve urban performance.
 - battery and system power management (see[power management](./power.md))
 
-``` {image} 3D_preview_front.PNG
+``` {image} _static/3D_preview_front.PNG
 
 ```
 
-``` {image} 3D_preview_back.PNG
+``` {image} _static/3D_preview_back.PNG
 
 ```

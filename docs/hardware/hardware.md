@@ -13,22 +13,22 @@ All hardware is developed using open toolchains:
 
 ## Images
 
-``` {image} mainboard_only.png
+``` {image} _static/mainboard_only.png
 
 ```
 
-``` {image} schematic.PNG
+``` {image} _static/schematic.PNG
 
 ```
 
-``` {image} PCB_view.PNG
+``` {image} _static/PCB_view.PNG
 
 ```
 
-``` {image} 3D_preview_front.PNG
+``` {image} _static/3D_preview_front.PNG
 
 ```
 
-``` {image} 3D_preview_back.PNG
+``` {image} _static/3D_preview_back.PNG
 
 ```
