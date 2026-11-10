@@ -13,7 +13,7 @@ Status **in development**
 - ublox NEO-F10 GNSS receiver (L1 + L5) with passive omnidirectional antenna for good value urban performance.
 - two IMX 678 (M12 lens mount) sensors with kernel support
 - dead reckoning
-- off the shelf [Insta360 Ace Pro 2 battery](https://store.insta360.com/en/product/ace-pro-2-battery)
+- support for off the shelf batteries
 
 ## TODOs
 
