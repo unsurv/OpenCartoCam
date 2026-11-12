@@ -20,12 +20,13 @@
       </svg>
       <div>
         <h1>360° CAMERA VALIDATION</h1>
-        <div class="subtitle">OpenCartoCam · ray-intersection review</div>
       </div>
     </div>
     <div class="header-actions">
-      <span class="connection-note"><i class="status-dot"></i>Local analysis · OSM tiles only</span>
+      <label class="button" for="captureUpload" title="Select a capture CSV; images load automatically from its images directory">Load captures</label>
+      <input id="captureUpload" type="file" accept=".csv,text/csv,image/*" multiple hidden>
       <button class="button primary" id="runValidation" type="button">Run validation</button>
+      <span class="upload-status" id="captureUploadStatus" role="status">Select a capture CSV</span>
     </div>
   </header>
 
@@ -40,7 +41,7 @@
     <section class="workspace" aria-label="Capture inspection workspace">
       <article class="panel">
         <div class="panel-header">
-          <div class="panel-title">Image viewer <span id="captureLabel">Capture 01 / 10</span></div>
+          <div class="panel-title">Image viewer <span id="captureLabel">No captures loaded</span></div>
           <div class="panel-tools">
             <label class="button compact" for="imageUpload">Load image</label>
             <input id="imageUpload" type="file" accept="image/*" hidden>
@@ -50,10 +51,9 @@
         </div>
         <div class="viewer-body">
           <div class="image-stage" id="imageStage">
-            <svg id="panorama" viewBox="0 0 3840 1920" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Schematic 360-degree panorama"></svg>
             <img id="uploadedImage" alt="Uploaded 360-degree capture" hidden>
-            <svg id="detectionOverlay" viewBox="0 0 3840 1920" preserveAspectRatio="xMidYMid meet" aria-label="Object detection rectangles"></svg>
-            <span class="stage-tag" id="stageTag">SCHEMATIC PANORAMA · 3840 × 1920</span>
+            <svg id="detectionOverlay" preserveAspectRatio="xMidYMid meet" aria-label="Object detection rectangles"></svg>
+            <span class="stage-tag" id="stageTag">LOAD A CAPTURE CSV FOR PREVIEW</span>
           </div>
           <div class="viewer-meta">
             <div class="meta-item"><small>Image</small><span id="metaImage">—</span></div>
@@ -66,11 +66,18 @@
 
       <article class="panel">
         <div class="panel-header">
-          <div class="panel-title">OSM map <span>Embedded Mapbox.js</span></div>
           <label class="layer-toggle"><input type="checkbox" id="allBearings">Show all bearing rays</label>
         </div>
         <div class="map-wrap">
           <div id="map" aria-label="OpenStreetMap capture map"></div>
+          <div class="add-node-control">
+            <button class="button compact" id="addNodeButton" type="button" aria-expanded="false" aria-controls="nodeClassMenu" disabled>Add node</button>
+            <div class="node-class-menu" id="nodeClassMenu" role="menu" aria-label="Node class" hidden>
+              <button type="button" role="menuitem" data-node-class="surveillance camera">surveillance camera</button>
+              <button type="button" role="menuitem" data-node-class="dome surveillance camera">dome surveillance camera</button>
+            </div>
+            <span class="placement-hint" id="nodePlacementHint" hidden>Click map to place</span>
+          </div>
           <div class="map-status" id="mapStatus"><span>Loading local map renderer…</span></div>
         </div>
       </article>
@@ -83,11 +90,17 @@
             <h2>Suggested OSM objects</h2>
             <span id="suggestionCount">0 nodes</span>
           </div>
-          <span class="toolbar-note">Computed locally · not existing OSM data</span>
+          <div class="table-actions">
+            <label class="class-filter" for="suggestionClassFilter">Class
+              <select id="suggestionClassFilter" aria-label="Filter suggested nodes by class">
+                <option value="">All classes</option>
+              </select>
+            </label>
+          </div>
         </div>
         <div class="table-scroll">
           <table class="suggestion-table">
-            <thead><tr><th>Node</th><th>Class</th><th>Latitude</th><th>Longitude</th><th>Support</th><th>RMS</th><th>Quality</th></tr></thead>
+            <thead><tr><th>Node</th><th>Class</th><th>Latitude</th><th>Longitude</th><th>Amount</th><th>RMS</th><th>Quality</th></tr></thead>
             <tbody id="suggestionTableBody"></tbody>
           </table>
           <div class="empty-state" id="emptySuggestions" hidden>No multi-capture intersections found.</div>
@@ -108,13 +121,12 @@
             <button class="text-button" id="clearSuggestionFilter" type="button" hidden>Clear filter</button>
           </div>
           <div class="table-actions">
-            <input class="search" id="captureSearch" type="search" placeholder="Filter image, class or coordinate…" aria-label="Filter captures">
             <button class="button compact" id="exportReport" type="button">Export report</button>
           </div>
         </div>
         <div class="table-scroll">
           <table class="capture-table">
-            <thead><tr><th>Capture</th><th>Image name</th><th>GNSS latitude</th><th>GNSS longitude</th><th>Heading</th><th>Detections</th><th>Capture bearings</th><th>Validation</th></tr></thead>
+            <thead><tr><th>Capture</th><th>Image</th><th>Latitude</th><th>Longitude</th><th>Moving</th><th>Detections</th><th>Capture bearings</th><th>Validation</th></tr></thead>
             <tbody id="captureTableBody"></tbody>
           </table>
           <div class="empty-state" id="emptyState" hidden>No captures match this filter.</div>

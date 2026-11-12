@@ -1,366 +1,5 @@
 'use strict';
 
-// Camera detections contain observations only. Physical object identity is inferred below.
-const DETECTIONS = [
-  {
-    "id": "100001",
-    "gnss_latitude_deg": "52.3700000",
-    "gnss_longitude_deg": "4.8900000",
-    "gnss_altitude_m": "12.40",
-    "camera_heading_deg": "90.0",
-    "capture_bearing_deg": "56.49",
-    "image_name": "drive_past_000001.jpg",
-    "image_width_px": "3840",
-    "image_height_px": "1920",
-    "class_label": "surveillance camera",
-    "confidence": "0.96",
-    "bbox_x_min": "1552",
-    "bbox_y_min": "911",
-    "bbox_x_max": "1573",
-    "bbox_y_max": "951"
-  },
-  {
-    "id": "100002",
-    "gnss_latitude_deg": "52.3700000",
-    "gnss_longitude_deg": "4.8900000",
-    "gnss_altitude_m": "12.40",
-    "camera_heading_deg": "90.0",
-    "capture_bearing_deg": "110.83",
-    "image_name": "drive_past_000001.jpg",
-    "image_width_px": "3840",
-    "image_height_px": "1920",
-    "class_label": "dome surveillance camera",
-    "confidence": "0.91",
-    "bbox_x_min": "2133",
-    "bbox_y_min": "919",
-    "bbox_x_max": "2152",
-    "bbox_y_max": "941"
-  },
-  {
-    "id": "100003",
-    "gnss_latitude_deg": "52.3700000",
-    "gnss_longitude_deg": "4.8901471",
-    "gnss_altitude_m": "12.41",
-    "camera_heading_deg": "90.0",
-    "capture_bearing_deg": "49.13",
-    "image_name": "drive_past_000002.jpg",
-    "image_width_px": "3840",
-    "image_height_px": "1920",
-    "class_label": "surveillance camera",
-    "confidence": "0.96",
-    "bbox_x_min": "1472",
-    "bbox_y_min": "902",
-    "bbox_x_max": "1496",
-    "bbox_y_max": "949"
-  },
-  {
-    "id": "100004",
-    "gnss_latitude_deg": "52.3700000",
-    "gnss_longitude_deg": "4.8901471",
-    "gnss_altitude_m": "12.41",
-    "camera_heading_deg": "90.0",
-    "capture_bearing_deg": "114.58",
-    "image_name": "drive_past_000002.jpg",
-    "image_width_px": "3840",
-    "image_height_px": "1920",
-    "class_label": "dome surveillance camera",
-    "confidence": "0.93",
-    "bbox_x_min": "2173",
-    "bbox_y_min": "915",
-    "bbox_x_max": "2192",
-    "bbox_y_max": "936"
-  },
-  {
-    "id": "100005",
-    "gnss_latitude_deg": "52.3700000",
-    "gnss_longitude_deg": "4.8902943",
-    "gnss_altitude_m": "12.42",
-    "camera_heading_deg": "90.0",
-    "capture_bearing_deg": "40.13",
-    "image_name": "drive_past_000003.jpg",
-    "image_width_px": "3840",
-    "image_height_px": "1920",
-    "class_label": "surveillance camera",
-    "confidence": "0.95",
-    "bbox_x_min": "1374",
-    "bbox_y_min": "892",
-    "bbox_x_max": "1402",
-    "bbox_y_max": "947"
-  },
-  {
-    "id": "100006",
-    "gnss_latitude_deg": "52.3700000",
-    "gnss_longitude_deg": "4.8902943",
-    "gnss_altitude_m": "12.42",
-    "camera_heading_deg": "90.0",
-    "capture_bearing_deg": "118.87",
-    "image_name": "drive_past_000003.jpg",
-    "image_width_px": "3840",
-    "image_height_px": "1920",
-    "class_label": "dome surveillance camera",
-    "confidence": "0.94",
-    "bbox_x_min": "2218",
-    "bbox_y_min": "909",
-    "bbox_x_max": "2237",
-    "bbox_y_max": "931"
-  },
-  {
-    "id": "100007",
-    "gnss_latitude_deg": "52.3700000",
-    "gnss_longitude_deg": "4.8904414",
-    "gnss_altitude_m": "12.43",
-    "camera_heading_deg": "90.0",
-    "capture_bearing_deg": "26.45",
-    "image_name": "drive_past_000004.jpg",
-    "image_width_px": "3840",
-    "image_height_px": "1920",
-    "class_label": "surveillance camera",
-    "confidence": "0.95",
-    "bbox_x_min": "1226",
-    "bbox_y_min": "881",
-    "bbox_x_max": "1258",
-    "bbox_y_max": "945"
-  },
-  {
-    "id": "100008",
-    "gnss_latitude_deg": "52.3700000",
-    "gnss_longitude_deg": "4.8904414",
-    "gnss_altitude_m": "12.43",
-    "camera_heading_deg": "90.0",
-    "capture_bearing_deg": "125.82",
-    "image_name": "drive_past_000004.jpg",
-    "image_width_px": "3840",
-    "image_height_px": "1920",
-    "class_label": "dome surveillance camera",
-    "confidence": "0.95",
-    "bbox_x_min": "2291",
-    "bbox_y_min": "899",
-    "bbox_x_max": "2313",
-    "bbox_y_max": "924"
-  },
-  {
-    "id": "100009",
-    "gnss_latitude_deg": "52.3700000",
-    "gnss_longitude_deg": "4.8905885",
-    "gnss_altitude_m": "12.44",
-    "camera_heading_deg": "90.0",
-    "capture_bearing_deg": "9.54",
-    "image_name": "drive_past_000005.jpg",
-    "image_width_px": "3840",
-    "image_height_px": "1920",
-    "class_label": "surveillance camera",
-    "confidence": "0.94",
-    "bbox_x_min": "1044",
-    "bbox_y_min": "873",
-    "bbox_x_max": "1080",
-    "bbox_y_max": "943"
-  },
-  {
-    "id": "100010",
-    "gnss_latitude_deg": "52.3700000",
-    "gnss_longitude_deg": "4.8905885",
-    "gnss_altitude_m": "12.44",
-    "camera_heading_deg": "90.0",
-    "capture_bearing_deg": "134.91",
-    "image_name": "drive_past_000005.jpg",
-    "image_width_px": "3840",
-    "image_height_px": "1920",
-    "class_label": "dome surveillance camera",
-    "confidence": "0.96",
-    "bbox_x_min": "2386",
-    "bbox_y_min": "886",
-    "bbox_x_max": "2412",
-    "bbox_y_max": "917"
-  },
-  {
-    "id": "100011",
-    "gnss_latitude_deg": "52.3700000",
-    "gnss_longitude_deg": "4.8907356",
-    "gnss_altitude_m": "12.45",
-    "camera_heading_deg": "90.0",
-    "capture_bearing_deg": "350.32",
-    "image_name": "drive_past_000006.jpg",
-    "image_width_px": "3840",
-    "image_height_px": "1920",
-    "class_label": "surveillance camera",
-    "confidence": "0.93",
-    "bbox_x_min": "839",
-    "bbox_y_min": "873",
-    "bbox_x_max": "874",
-    "bbox_y_max": "943"
-  },
-  {
-    "id": "100012",
-    "gnss_latitude_deg": "52.3700000",
-    "gnss_longitude_deg": "4.8907356",
-    "gnss_altitude_m": "12.45",
-    "camera_heading_deg": "90.0",
-    "capture_bearing_deg": "149.23",
-    "image_name": "drive_past_000006.jpg",
-    "image_width_px": "3840",
-    "image_height_px": "1920",
-    "class_label": "dome surveillance camera",
-    "confidence": "0.96",
-    "bbox_x_min": "2536",
-    "bbox_y_min": "871",
-    "bbox_x_max": "2568",
-    "bbox_y_max": "907"
-  },
-  {
-    "id": "100013",
-    "gnss_latitude_deg": "52.3700000",
-    "gnss_longitude_deg": "4.8908828",
-    "gnss_altitude_m": "12.46",
-    "camera_heading_deg": "90.0",
-    "capture_bearing_deg": "333.68",
-    "image_name": "drive_past_000007.jpg",
-    "image_width_px": "3840",
-    "image_height_px": "1920",
-    "class_label": "surveillance camera",
-    "confidence": "0.92",
-    "bbox_x_min": "663",
-    "bbox_y_min": "881",
-    "bbox_x_max": "695",
-    "bbox_y_max": "945"
-  },
-  {
-    "id": "100014",
-    "gnss_latitude_deg": "52.3700000",
-    "gnss_longitude_deg": "4.8908828",
-    "gnss_altitude_m": "12.46",
-    "camera_heading_deg": "90.0",
-    "capture_bearing_deg": "168.38",
-    "image_name": "drive_past_000007.jpg",
-    "image_width_px": "3840",
-    "image_height_px": "1920",
-    "class_label": "dome surveillance camera",
-    "confidence": "0.95",
-    "bbox_x_min": "2738",
-    "bbox_y_min": "858",
-    "bbox_x_max": "2774",
-    "bbox_y_max": "900"
-  },
-  {
-    "id": "100015",
-    "gnss_latitude_deg": "52.3700000",
-    "gnss_longitude_deg": "4.8910299",
-    "gnss_altitude_m": "12.47",
-    "camera_heading_deg": "90.0",
-    "capture_bearing_deg": "320.03",
-    "image_name": "drive_past_000008.jpg",
-    "image_width_px": "3840",
-    "image_height_px": "1920",
-    "class_label": "surveillance camera",
-    "confidence": "0.90",
-    "bbox_x_min": "520",
-    "bbox_y_min": "892",
-    "bbox_x_max": "548",
-    "bbox_y_max": "947"
-  },
-  {
-    "id": "100016",
-    "gnss_latitude_deg": "52.3700000",
-    "gnss_longitude_deg": "4.8910299",
-    "gnss_altitude_m": "12.47",
-    "camera_heading_deg": "90.0",
-    "capture_bearing_deg": "191.44",
-    "image_name": "drive_past_000008.jpg",
-    "image_width_px": "3840",
-    "image_height_px": "1920",
-    "class_label": "dome surveillance camera",
-    "confidence": "0.93",
-    "bbox_x_min": "2984",
-    "bbox_y_min": "858",
-    "bbox_x_max": "3020",
-    "bbox_y_max": "900"
-  },
-  {
-    "id": "100017",
-    "gnss_latitude_deg": "52.3700000",
-    "gnss_longitude_deg": "4.8911770",
-    "gnss_altitude_m": "12.48",
-    "camera_heading_deg": "90.0",
-    "capture_bearing_deg": "310.71",
-    "image_name": "drive_past_000009.jpg",
-    "image_width_px": "3840",
-    "image_height_px": "1920",
-    "class_label": "surveillance camera",
-    "confidence": "0.87",
-    "bbox_x_min": "422",
-    "bbox_y_min": "902",
-    "bbox_x_max": "446",
-    "bbox_y_max": "949"
-  },
-  {
-    "id": "100018",
-    "gnss_latitude_deg": "52.3700000",
-    "gnss_longitude_deg": "4.8911770",
-    "gnss_altitude_m": "12.48",
-    "camera_heading_deg": "90.0",
-    "capture_bearing_deg": "210.81",
-    "image_name": "drive_past_000009.jpg",
-    "image_width_px": "3840",
-    "image_height_px": "1920",
-    "class_label": "dome surveillance camera",
-    "confidence": "0.90",
-    "bbox_x_min": "3193",
-    "bbox_y_min": "871",
-    "bbox_x_max": "3225",
-    "bbox_y_max": "907"
-  },
-  {
-    "id": "100019",
-    "gnss_latitude_deg": "52.3700000",
-    "gnss_longitude_deg": "4.8913242",
-    "gnss_altitude_m": "12.49",
-    "camera_heading_deg": "90.0",
-    "capture_bearing_deg": "303.40",
-    "image_name": "drive_past_000010.jpg",
-    "image_width_px": "3840",
-    "image_height_px": "1920",
-    "class_label": "surveillance camera",
-    "confidence": "0.82",
-    "bbox_x_min": "346",
-    "bbox_y_min": "911",
-    "bbox_x_max": "366",
-    "bbox_y_max": "951"
-  },
-  {
-    "id": "100020",
-    "gnss_latitude_deg": "52.3700000",
-    "gnss_longitude_deg": "4.8913242",
-    "gnss_altitude_m": "12.49",
-    "camera_heading_deg": "90.0",
-    "capture_bearing_deg": "225.24",
-    "image_name": "drive_past_000010.jpg",
-    "image_width_px": "3840",
-    "image_height_px": "1920",
-    "class_label": "dome surveillance camera",
-    "confidence": "0.86",
-    "bbox_x_min": "3349",
-    "bbox_y_min": "886",
-    "bbox_x_max": "3376",
-    "bbox_y_max": "917"
-  },
-  {
-    "id": "100021",
-    "gnss_latitude_deg": "52.3700000",
-    "gnss_longitude_deg": "4.8913242",
-    "gnss_altitude_m": "12.49",
-    "camera_heading_deg": "90.0",
-    "capture_bearing_deg": "180.00",
-    "image_name": "drive_past_000010.jpg",
-    "image_width_px": "3840",
-    "image_height_px": "1920",
-    "class_label": "surveillance camera",
-    "confidence": "0.68",
-    "bbox_x_min": "2870",
-    "bbox_y_min": "900",
-    "bbox_x_max": "2890",
-    "bbox_y_max": "940"
-  }
-];
-
 const PROJECT_REQUEST_ID = 'github/unsurv/OpenCartoCam';
 const ANALYSIS = {
   minimumIntersectionAngleDeg: 5,
@@ -380,10 +19,12 @@ const state = {
   capture: 0,
   detection: null,
   issues: new Map(),
-  filter: '',
+  suggestionClass: '',
   mapReady: false,
   uploaded: new Map(),
   suggestions: [],
+  manualSuggestions: [],
+  pendingNodeClass: null,
   orphans: [],
   selectedSuggestion: null,
   selectedOrphan: null,
@@ -401,30 +42,35 @@ const cross2 = (a, b) => a.x * b.y - a.y * b.x;
 const distance2 = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
 const bearingDistance = (a, b) => Math.abs((a - b + 540) % 360 - 180);
 
-const normalized = DETECTIONS.map((row) => ({
-  ...row,
-  id: toNumber(row.id),
-  gnss_latitude_deg: toNumber(row.gnss_latitude_deg),
-  gnss_longitude_deg: toNumber(row.gnss_longitude_deg),
-  gnss_altitude_m: toNumber(row.gnss_altitude_m),
-  camera_heading_deg: toNumber(row.camera_heading_deg),
-  capture_bearing_deg: toNumber(row.capture_bearing_deg),
-  image_width_px: toNumber(row.image_width_px),
-  image_height_px: toNumber(row.image_height_px),
-  confidence: toNumber(row.confidence),
-  bbox_x_min: toNumber(row.bbox_x_min),
-  bbox_y_min: toNumber(row.bbox_y_min),
-  bbox_x_max: toNumber(row.bbox_x_max),
-  bbox_y_max: toNumber(row.bbox_y_max),
-}));
+function normalizeDetections(rows) {
+  return rows.map((row) => ({
+    ...row,
+    id: String(row.id),
+    gnss_latitude_deg: toNumber(row.gnss_latitude_deg),
+    gnss_longitude_deg: toNumber(row.gnss_longitude_deg),
+    gnss_altitude_m: toNumber(row.gnss_altitude_m),
+    camera_heading_deg: toNumber(row.camera_heading_deg),
+    capture_bearing_deg: toNumber(row.capture_bearing_deg),
+    image_width_px: toNumber(row.image_width_px),
+    image_height_px: toNumber(row.image_height_px),
+    confidence: toNumber(row.confidence),
+    bbox_x_min: toNumber(row.bbox_x_min),
+    bbox_y_min: toNumber(row.bbox_y_min),
+    bbox_x_max: toNumber(row.bbox_x_max),
+    bbox_y_max: toNumber(row.bbox_y_max),
+  }));
+}
 
-const imageNames = [...new Set(normalized.map((row) => row.image_name))];
+function buildCaptures(rows) {
+  const imageNames = [...new Set(rows.map((row) => row.image_name))];
+  return imageNames.map((imageName, index) => {
+    const detections = rows.filter((row) => row.image_name === imageName);
+    return { index, imageName, detections, first: detections[0] };
+  });
+}
 
-const captures = imageNames.map((imageName, index) => {
-  const detections = normalized.filter((row) => row.image_name === imageName);
-  return { index, imageName, detections, first: detections[0] };
-});
-state.detection = captures[0]?.detections[0]?.id ?? null;
+let normalized = [];
+let captures = [];
 
 function currentCapture() {
   return captures[state.capture];
@@ -605,7 +251,7 @@ function analyseIntersections() {
     id: `S${String(index + 1).padStart(2, '0')}`,
   }));
 
-  state.suggestions = suggestions;
+  state.suggestions = [...suggestions, ...state.manualSuggestions];
   state.detectionToSuggestion = new Map();
   suggestions.forEach((suggestion) => suggestion.detectionIds.forEach((id) => {
     state.detectionToSuggestion.set(id, suggestion.id);
@@ -613,13 +259,20 @@ function analyseIntersections() {
   const linkedIds = new Set(suggestions.flatMap((suggestion) => suggestion.detectionIds));
   state.orphans = normalized.filter((row) => !linkedIds.has(row.id));
 
-  if (state.selectedSuggestion && !suggestions.some((node) => node.id === state.selectedSuggestion)) {
+  if (state.selectedSuggestion && !state.suggestions.some((node) => node.id === state.selectedSuggestion)) {
     state.selectedSuggestion = null;
   }
   if (state.selectedOrphan && !state.orphans.some((row) => row.id === state.selectedOrphan)) {
     state.selectedOrphan = null;
   }
-  $('#objectCount').textContent = suggestions.length;
+  const suggestedClasses = [...new Set(state.suggestions.map((node) => node.classLabel))].sort();
+  if (state.suggestionClass && !suggestedClasses.includes(state.suggestionClass)) state.suggestionClass = '';
+  $('#suggestionClassFilter').innerHTML = '<option value="">All classes</option>'
+    + suggestedClasses.map((classLabel) => `<option value="${escapeHtml(classLabel)}">${escapeHtml(classLabel)}</option>`).join('');
+  $('#suggestionClassFilter').value = state.suggestionClass;
+  const selected = state.suggestions.find((node) => node.id === state.selectedSuggestion);
+  if (selected && state.suggestionClass && selected.classLabel !== state.suggestionClass) state.selectedSuggestion = null;
+  $('#objectCount').textContent = state.suggestions.length;
   renderSuggestions();
   renderOrphans();
   renderTable();
@@ -652,47 +305,103 @@ function validateDataset() {
     state.issues.set(capture.index, issues);
   });
   const valid = captures.filter((capture) => state.issues.get(capture.index).length === 0).length;
-  $('#validCount').textContent = `${valid} / ${captures.length}`;
+  $('#validCount').textContent = captures.length ? `${valid} / ${captures.length}` : '—';
   renderTable();
 }
 
-function renderPanorama(capture) {
-  const heading = capture.first.camera_heading_deg;
-  $('#panorama').innerHTML = `
-    <defs>
-      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#16263a"/><stop offset="1" stop-color="#284252"/>
-      </linearGradient>
-      <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#1c2b30"/><stop offset="1" stop-color="#090f16"/>
-      </linearGradient>
-      <pattern id="microgrid" width="120" height="120" patternUnits="userSpaceOnUse">
-        <path d="M120 0H0V120" fill="none" stroke="#8eb5c2" stroke-opacity=".08" stroke-width="2"/>
-      </pattern>
-    </defs>
-    <rect width="3840" height="960" fill="url(#sky)"/>
-    <rect y="960" width="3840" height="960" fill="url(#ground)"/>
-    <rect width="3840" height="1920" fill="url(#microgrid)"/>
-    <path d="M0 950 400 810 800 900 1200 740 1600 920 2000 790 2400 910 2800 750 3200 900 3840 820V1100H0Z" fill="#101d28" opacity=".9"/>
-    <g fill="#142631" stroke="#3d5964" stroke-width="3">
-      <path d="M100 950V620h330v330M510 950V700h250v250M880 950V550h390v400M1400 950V680h260v270M1790 950V590h360v360M2320 950V720h290v230M2780 950V570h400v380M3330 950V670h300v280"/>
-    </g>
-    <g fill="#7ca0a8" opacity=".28">
-      ${Array.from({ length: 24 }, (_, index) => `<rect x="${150 + index * 151}" y="${690 + (index % 3) * 55}" width="46" height="30"/>`).join('')}
-    </g>
-    <path d="M0 1160Q960 1070 1920 1160T3840 1160V1530Q2880 1410 1920 1510T0 1530Z" fill="#172129"/>
-    <path d="M0 1340Q960 1250 1920 1340T3840 1340" fill="none" stroke="#b8c3af" stroke-opacity=".35" stroke-width="9" stroke-dasharray="70 60"/>
-    <path d="M0 960H3840" stroke="#87acb7" stroke-opacity=".32" stroke-width="3"/>
-    ${[-180, -90, 0, 90, 180].map((angle) => {
-      const x = (angle + 180) / 360 * 3840;
-      const label = angle === 0 ? `CAM ${heading}°` : `${angle > 0 ? '+' : ''}${angle}°`;
-      return `<path d="M${x} 0V1920" stroke="#9ed4df" stroke-opacity="${angle === 0 ? 0.24 : 0.09}" stroke-width="${angle === 0 ? 4 : 2}" stroke-dasharray="16 20"/>
-        <text x="${x + 18}" y="80" fill="#a9c0ca" opacity=".65" font-size="34" font-family="monospace">${label}</text>`;
-    }).join('')}
-    <g font-family="monospace" fill="#b9cbd3">
-      <text x="40" y="1840" font-size="30" opacity=".6">EQUIRECTANGULAR SCHEMATIC · LOAD THE SOURCE IMAGE FOR VISUAL INSPECTION</text>
-      <text x="40" y="120" font-size="38" opacity=".8">${escapeHtml(capture.imageName)}</text>
-    </g>`;
+function parseCsv(text) {
+  const records = [];
+  let record = [];
+  let field = '';
+  let quoted = false;
+
+  for (let index = 0; index < text.length; index += 1) {
+    const character = text[index];
+    if (quoted) {
+      if (character === '"' && text[index + 1] === '"') {
+        field += '"';
+        index += 1;
+      } else if (character === '"') quoted = false;
+      else field += character;
+    } else if (character === '"' && field === '') quoted = true;
+    else if (character === ',') {
+      record.push(field);
+      field = '';
+    } else if (character === '\n' || character === '\r') {
+      if (character === '\r' && text[index + 1] === '\n') index += 1;
+      record.push(field);
+      records.push(record);
+      record = [];
+      field = '';
+    } else field += character;
+  }
+  if (quoted) throw new Error('The CSV contains an unterminated quoted field.');
+  if (field || record.length) {
+    record.push(field);
+    records.push(record);
+  }
+  if (!records.length) throw new Error('The CSV is empty.');
+
+  const headers = records.shift().map((header, index) => (
+    index === 0 ? header.replace(/^\uFEFF/, '') : header
+  ).trim());
+  const required = [
+    'id', 'gnss_latitude_deg', 'gnss_longitude_deg', 'gnss_altitude_m',
+    'camera_heading_deg', 'capture_bearing_deg', 'image_name', 'image_width_px',
+    'image_height_px', 'class_label', 'confidence', 'bbox_x_min', 'bbox_y_min',
+    'bbox_x_max', 'bbox_y_max',
+  ];
+  const missing = required.filter((header) => !headers.includes(header));
+  if (missing.length) throw new Error(`Missing CSV columns: ${missing.join(', ')}`);
+
+  const rows = records.filter((record) => record.some((value) => value.trim())).map((record, index) => {
+    if (record.length !== headers.length) throw new Error(`CSV row ${index + 2} has ${record.length} columns; expected ${headers.length}.`);
+    return Object.fromEntries(headers.map((header, column) => [header, record[column].trim()]));
+  });
+  if (!rows.length) throw new Error('The CSV contains no detections.');
+  return rows;
+}
+
+function imageBasename(imageName) {
+  return imageName.split(/[\\/]/).pop();
+}
+
+function loadCaptureDataset(rows, imageFiles, imageBaseUrl) {
+  const nextNormalized = normalizeDetections(rows);
+  const nextCaptures = buildCaptures(nextNormalized);
+  const filesByName = new Map(imageFiles.map((file) => [file.name, file]));
+
+  state.uploaded.forEach((url) => {
+    if (url.startsWith('blob:')) URL.revokeObjectURL(url);
+  });
+  state.uploaded.clear();
+  nextCaptures.forEach((capture) => {
+    const fileName = imageBasename(capture.imageName);
+    const file = filesByName.get(fileName);
+    const url = file ? URL.createObjectURL(file) : `${imageBaseUrl}${encodeURIComponent(fileName)}`;
+    state.uploaded.set(capture.imageName, url);
+  });
+
+  normalized = nextNormalized;
+  captures = nextCaptures;
+  state.capture = 0;
+  state.detection = captures[0].detections[0].id;
+  state.issues.clear();
+  state.suggestionClass = '';
+  state.manualSuggestions = [];
+  state.pendingNodeClass = null;
+  state.selectedSuggestion = null;
+  state.selectedOrphan = null;
+  state.mapReady = false;
+  $('#captureCount').textContent = captures.length;
+  $('#detectionCount').textContent = normalized.length;
+  validateDataset();
+  analyseIntersections();
+  renderCapture();
+  updateAddNodeControl();
+  refreshMap();
+  $('#lastValidated').textContent = 'Capture CSV loaded · ready for manual review';
+  return captures.filter((capture) => state.uploaded.has(capture.imageName)).length;
 }
 
 function renderOverlay() {
@@ -701,7 +410,7 @@ function renderOverlay() {
     const selected = row.id === state.detection;
     const labelY = Math.max(52, row.bbox_y_min - 18);
     return `
-      <g class="detection-box ${selected ? 'selected' : ''}" data-detection="${row.id}" style="color:${color}" opacity="${selected ? 1 : 0.72}">
+      <g class="detection-box ${selected ? 'selected' : ''}" data-detection="${escapeHtml(row.id)}" style="color:${color}" opacity="${selected ? 1 : 0.72}">
         <rect x="${row.bbox_x_min}" y="${row.bbox_y_min}" width="${row.bbox_x_max - row.bbox_x_min}" height="${row.bbox_y_max - row.bbox_y_min}"
           fill="${color}" fill-opacity="${selected ? 0.1 : 0.03}" stroke="${color}" stroke-width="${selected ? 7 : 4}"/>
         <rect x="${row.bbox_x_min}" y="${labelY - 45}" width="${Math.max(390, row.class_label.length * 24)}" height="58" fill="#0c1220" fill-opacity=".9"/>
@@ -711,7 +420,7 @@ function renderOverlay() {
       </g>`;
   }).join('');
   document.querySelectorAll('.detection-box').forEach((element) => {
-    element.addEventListener('click', () => selectDetection(Number(element.dataset.detection)));
+    element.addEventListener('click', () => selectDetection(element.dataset.detection));
   });
 }
 
@@ -719,41 +428,68 @@ function renderDetectionStrip() {
   $('#detectionStrip').innerHTML = currentCapture().detections.map((row) => {
     const nodeId = state.detectionToSuggestion.get(row.id);
     return `
-      <button type="button" class="detection-chip ${row.id === state.detection ? 'active' : ''}" data-detection="${row.id}">
+      <button type="button" class="detection-chip ${row.id === state.detection ? 'active' : ''}" data-detection="${escapeHtml(row.id)}">
         <strong>${escapeHtml(row.class_label)}</strong>
         <span>${row.capture_bearing_deg.toFixed(2)}° · ${nodeId ? `node ${nodeId}` : 'orphaned'}</span>
       </button>`;
   }).join('');
   document.querySelectorAll('.detection-chip').forEach((element) => {
-    element.addEventListener('click', () => selectDetection(Number(element.dataset.detection)));
+    element.addEventListener('click', () => selectDetection(element.dataset.detection));
   });
 }
 
 function updateImageStage() {
-  const url = state.uploaded.get(state.capture);
+  const capture = currentCapture();
   const image = $('#uploadedImage');
+  if (!capture) {
+    image.onerror = null;
+    image.hidden = true;
+    image.removeAttribute('src');
+    $('#stageTag').textContent = 'LOAD A CAPTURE CSV FOR PREVIEW';
+    return;
+  }
+
+  const url = state.uploaded.get(capture.imageName);
+  const dimensions = `${capture.first.image_width_px} × ${capture.first.image_height_px}`;
+  $('#detectionOverlay').setAttribute('viewBox', `0 0 ${capture.first.image_width_px} ${capture.first.image_height_px}`);
   if (url) {
+    image.onerror = () => {
+      if (currentCapture().imageName !== capture.imageName || state.uploaded.get(capture.imageName) !== url) return;
+      image.hidden = true;
+      $('#stageTag').textContent = `IMAGE NOT FOUND IN ./images · ${dimensions} COORDINATES`;
+    };
     image.src = url;
+    image.alt = capture.imageName;
     image.hidden = false;
-    $('#panorama').hidden = true;
-    $('#stageTag').textContent = 'LOCAL IMAGE · 3840 × 1920 COORDINATES';
+    $('#stageTag').textContent = `LOCAL IMAGE · ${dimensions} COORDINATES`;
   } else {
     image.hidden = true;
     image.removeAttribute('src');
-    $('#panorama').hidden = false;
-    $('#stageTag').textContent = 'SCHEMATIC PANORAMA · 3840 × 1920';
+    $('#stageTag').textContent = `IMAGE NOT LOADED · ${dimensions} COORDINATES`;
   }
 }
 
 function renderCapture() {
   const capture = currentCapture();
+  if (!capture) {
+    $('#captureLabel').textContent = 'No captures loaded';
+    $('#metaImage').textContent = '—';
+    $('#metaImage').removeAttribute('title');
+    $('#metaGnss').textContent = '—';
+    $('#metaHeading').textContent = '—';
+    $('#detectionOverlay').innerHTML = '';
+    $('#detectionStrip').innerHTML = '';
+    updateImageStage();
+    renderTable();
+    return;
+  }
+
   const row = capture.first;
   $('#captureLabel').textContent = `Capture ${String(state.capture + 1).padStart(2, '0')} / ${captures.length}`;
   $('#metaImage').textContent = capture.imageName;
   $('#metaImage').title = capture.imageName;
   $('#metaGnss').textContent = `${row.gnss_latitude_deg.toFixed(7)}, ${row.gnss_longitude_deg.toFixed(7)}`;
   $('#metaHeading').textContent = `${row.camera_heading_deg.toFixed(1)}° · ${row.gnss_altitude_m.toFixed(2)} m`;
-  renderPanorama(capture);
   updateImageStage();
   renderOverlay();
   renderDetectionStrip();
@@ -761,10 +497,22 @@ function renderCapture() {
   updateMapSelection();
 }
 
+function filteredSuggestions() {
+  return state.suggestionClass
+    ? state.suggestions.filter((node) => node.classLabel === state.suggestionClass)
+    : state.suggestions;
+}
+
 function renderSuggestions() {
-  $('#suggestionCount').textContent = `${state.suggestions.length} node${state.suggestions.length === 1 ? '' : 's'}`;
-  $('#emptySuggestions').hidden = state.suggestions.length > 0;
-  $('#suggestionTableBody').innerHTML = state.suggestions.map((node) => `
+  const rows = filteredSuggestions();
+  $('#suggestionCount').textContent = state.suggestionClass
+    ? `${rows.length} / ${state.suggestions.length} nodes`
+    : `${rows.length} node${rows.length === 1 ? '' : 's'}`;
+  $('#emptySuggestions').hidden = rows.length > 0;
+  $('#emptySuggestions').textContent = state.suggestions.length
+    ? 'No suggested nodes match this class.'
+    : 'No multi-capture intersections found.';
+  $('#suggestionTableBody').innerHTML = rows.map((node) => `
     <tr data-suggestion="${node.id}" tabindex="0" class="${node.id === state.selectedSuggestion ? 'selected' : ''}" aria-selected="${node.id === state.selectedSuggestion}">
       <td class="node-cell">${node.id}</td>
       <td>${escapeHtml(classStyle(node.classLabel).short)}</td>
@@ -790,11 +538,11 @@ function renderOrphans() {
   $('#orphanCount').textContent = state.orphans.length;
   $('#emptyOrphans').hidden = state.orphans.length > 0;
   $('#orphanList').innerHTML = state.orphans.map((row) => `
-    <button type="button" class="orphan-item ${row.id === state.selectedOrphan ? 'selected' : ''}" data-orphan="${row.id}">
+    <button type="button" class="orphan-item ${row.id === state.selectedOrphan ? 'selected' : ''}" data-orphan="${escapeHtml(row.id)}">
       ${escapeHtml(row.image_name)} · ${escapeHtml(row.class_label)} · ${row.capture_bearing_deg.toFixed(2)}°
     </button>`).join('');
   document.querySelectorAll('.orphan-item').forEach((element) => {
-    element.addEventListener('click', () => selectOrphan(Number(element.dataset.orphan)));
+    element.addEventListener('click', () => selectOrphan(element.dataset.orphan));
   });
 }
 
@@ -806,15 +554,7 @@ function filteredCaptures() {
     const orphan = normalized.find((row) => row.id === state.selectedOrphan);
     if (orphan) rows = rows.filter((capture) => capture.imageName === orphan.image_name);
   }
-
-  const query = state.filter.trim().toLowerCase();
-  if (!query) return rows;
-  return rows.filter((capture) => [
-    capture.imageName,
-    capture.first.gnss_latitude_deg,
-    capture.first.gnss_longitude_deg,
-    ...capture.detections.map((row) => row.class_label),
-  ].join(' ').toLowerCase().includes(query));
+  return rows;
 }
 
 function renderTable() {
@@ -878,6 +618,10 @@ function selectCapture(index) {
   renderSuggestions();
   renderOrphans();
   renderCapture();
+  if (state.mapReady && map) {
+    map.invalidateSize(false);
+    map.setView(captureLatLng(capture), map.getZoom(), { animate: false });
+  }
 }
 
 function navigateCapture(direction) {
@@ -901,12 +645,67 @@ function selectSuggestion(id) {
   state.selectedSuggestion = id;
   state.selectedOrphan = null;
   const capture = captures.find((item) => suggestion.captureNames.includes(item.imageName));
-  state.capture = capture.index;
-  state.detection = capture.detections.find((row) => suggestion.detectionIds.includes(row.id)).id;
+  if (capture) {
+    state.capture = capture.index;
+    state.detection = capture.detections.find((row) => suggestion.detectionIds.includes(row.id)).id;
+  }
   renderSuggestions();
   renderOrphans();
   renderCapture();
   if (state.mapReady) map.panTo([suggestion.lat, suggestion.lon], { animate: false });
+}
+
+function updateAddNodeControl() {
+  const placing = Boolean(state.pendingNodeClass && state.mapReady);
+  $('#addNodeButton').disabled = !state.mapReady;
+  $('#addNodeButton').classList.toggle('active', placing);
+  $('#nodePlacementHint').hidden = !placing;
+  if (!state.mapReady) {
+    $('#nodeClassMenu').hidden = true;
+    $('#addNodeButton').setAttribute('aria-expanded', 'false');
+  }
+  if (map) map.getContainer().classList.toggle('placing-node', placing);
+}
+
+function addManualSuggestion(classLabel, latLng) {
+  const node = {
+    id: `M${String(state.manualSuggestions.length + 1).padStart(2, '0')}`,
+    classLabel,
+    lat: latLng.lat,
+    lon: latLng.lng,
+    support: 0,
+    rms: 0,
+    quality: 'Manual',
+    detectionIds: [],
+    captureNames: [],
+    manual: true,
+  };
+  state.manualSuggestions.push(node);
+  state.suggestions.push(node);
+  state.pendingNodeClass = null;
+  updateAddNodeControl();
+  if (state.suggestionClass && state.suggestionClass !== classLabel) {
+    state.suggestionClass = '';
+    $('#suggestionClassFilter').value = '';
+  }
+  if (![...$('#suggestionClassFilter').options].some((option) => option.value === classLabel)) {
+    $('#suggestionClassFilter').append(new Option(classLabel, classLabel));
+  }
+  $('#objectCount').textContent = state.suggestions.length;
+  renderSuggestions();
+  rebuildSuggestionMarkers();
+  renderTable();
+  selectSuggestion(node.id);
+}
+
+function navigateSuggestion(direction) {
+  const available = filteredSuggestions();
+  if (!available.length) return;
+  const currentPosition = available.findIndex((node) => node.id === state.selectedSuggestion);
+  const nextPosition = currentPosition === -1
+    ? (direction > 0 ? 0 : available.length - 1)
+    : (currentPosition + direction + available.length) % available.length;
+  selectSuggestion(available[nextPosition].id);
 }
 
 function selectOrphan(id) {
@@ -999,12 +798,8 @@ function destination(row, distanceM = 80) {
 }
 
 function rayEndpoint(row) {
-  const suggestionId = state.detectionToSuggestion.get(row.id);
-  const suggestion = state.suggestions.find((node) => node.id === suggestionId);
-  return suggestion ? [suggestion.lat, suggestion.lon] : (() => {
-    const point = destination(row);
-    return [point.lat, point.lon];
-  })();
+  const point = destination(row);
+  return [point.lat, point.lon];
 }
 
 function addRays(group, rows, selected = false) {
@@ -1022,28 +817,65 @@ function addRays(group, rows, selected = false) {
   });
 }
 
+function suggestionIcon(node, selected) {
+  const color = classStyle(node.classLabel).color;
+  const size = selected ? 16.5 : 12;
+  return L.divIcon({
+    className: `suggestion-node-marker${selected ? ' selected' : ''}`,
+    html: `<span class="suggestion-node-dot" style="background:${color}"></span>`,
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size / 2],
+  });
+}
+
 function rebuildSuggestionMarkers() {
   if (!map) return;
   if (suggestionLayer) suggestionLayer.clearLayers();
   else suggestionLayer = L.layerGroup().addTo(map);
   suggestionMarkers.clear();
 
-  state.suggestions.forEach((node) => {
-    const color = classStyle(node.classLabel).color;
-    const marker = L.circleMarker([node.lat, node.lon], {
-      radius: node.id === state.selectedSuggestion ? 11 : 8,
-      color: '#f1f5f7',
-      weight: node.id === state.selectedSuggestion ? 3 : 2,
-      fillColor: color,
-      fillOpacity: 1,
+  filteredSuggestions().forEach((node) => {
+    const marker = L.marker([node.lat, node.lon], {
+      draggable: true,
+      icon: suggestionIcon(node, node.id === state.selectedSuggestion),
     }).addTo(suggestionLayer);
     marker.bindPopup(`<strong>Suggested node ${node.id}</strong><br>${escapeHtml(node.classLabel)}<br><small>${node.support} captures · ${node.rms.toFixed(2)} m RMS</small>`);
     marker.on('click', () => selectSuggestion(node.id));
+    marker.on('dragend', () => {
+      const position = marker.getLatLng();
+      node.lat = position.lat;
+      node.lon = position.lng;
+      renderSuggestions();
+      renderTable();
+      updateMapSelection();
+    });
     suggestionMarkers.set(node.id, marker);
   });
 }
 
+function refreshMap() {
+  if (map) map.remove();
+  map = null;
+  state.mapReady = false;
+  routeLayer = null;
+  captureLayer = null;
+  suggestionLayer = null;
+  raysLayer = null;
+  selectedRayLayer = null;
+  selectedCaptureMarker = null;
+  captureMarkers.clear();
+  suggestionMarkers.clear();
+  $('#mapStatus').className = 'map-status';
+  $('#mapStatus').innerHTML = '<span>Loading capture map…</span>';
+  initMap();
+}
+
 function initMap() {
+  if (!captures.length) {
+    $('#mapStatus').className = 'map-status';
+    $('#mapStatus').innerHTML = '<span>Load a capture CSV to display the map.</span>';
+    return;
+  }
   if (!window.L) {
     $('#mapStatus').innerHTML = '<span>Local map library unavailable. Analysis tables remain functional.</span>';
     return;
@@ -1054,11 +886,13 @@ function initMap() {
       zoomControl: false,
       attributionControl: true,
       worldCopyJump: false,
-    }).setView([centre.gnss_latitude_deg, centre.gnss_longitude_deg], 15);
+      maxZoom: 24,
+    }).setView([centre.gnss_latitude_deg, centre.gnss_longitude_deg], 24);
     L.control.zoom({ position: 'bottomright' }).addTo(map);
 
     const tiles = new IdentifiedTileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
+      maxNativeZoom: 19,
+      maxZoom: 24,
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       crossOrigin: false,
     });
@@ -1075,7 +909,7 @@ function initMap() {
 
     captures.forEach((capture) => {
       const marker = L.circleMarker(captureLatLng(capture), {
-        radius: 6, color: '#d3e0e8', weight: 2, fillColor: '#111a2b', fillOpacity: 1,
+        radius: 4.5, color: '#d3e0e8', weight: 2, fillColor: '#111a2b', fillOpacity: 1,
       }).addTo(captureLayer);
       marker.bindTooltip(`Capture ${String(capture.index + 1).padStart(2, '0')}`, { direction: 'top', offset: [0, -6] });
       marker.on('click', () => selectCapture(capture.index));
@@ -1084,14 +918,18 @@ function initMap() {
 
     rebuildSuggestionMarkers();
     selectedCaptureMarker = L.circleMarker(captureLatLng(currentCapture()), {
-      radius: 10, color: '#0c1220', weight: 3, fillColor: '#22d3ee', fillOpacity: 1,
+      radius: 7.5, color: '#0c1220', weight: 3, fillColor: '#22d3ee', fillOpacity: 1,
     }).addTo(map);
 
     const bounds = L.latLngBounds(captures.map(captureLatLng));
     state.suggestions.forEach((node) => bounds.extend([node.lat, node.lon]));
-    map.fitBounds(bounds, { padding: [42, 42], maxZoom: 16, animate: false });
+    map.fitBounds(bounds, { padding: [42, 42], maxZoom: 24, animate: false });
+    map.on('click', (event) => {
+      if (state.pendingNodeClass) addManualSuggestion(state.pendingNodeClass, event.latlng);
+    });
     state.mapReady = true;
     mapStatus('OSM · PROJECT ID SENT');
+    updateAddNodeControl();
     updateMapSelection();
   } catch (error) {
     $('#mapStatus').innerHTML = '<span>Map initialization failed. Local analysis remains available.</span>';
@@ -1100,7 +938,8 @@ function initMap() {
 
 function updateMapSelection() {
   if (!state.mapReady || !map) return;
-  selectedCaptureMarker.setLatLng(captureLatLng(currentCapture()));
+  const selectedLatLng = captureLatLng(currentCapture());
+  selectedCaptureMarker.setLatLng(selectedLatLng);
   raysLayer.clearLayers();
   selectedRayLayer.clearLayers();
 
@@ -1118,15 +957,15 @@ function updateMapSelection() {
     const orphanRelevant = state.selectedOrphan && capture.detections.some((row) => row.id === state.selectedOrphan);
     const color = relevant || orphanRelevant ? classStyle(suggestion?.classLabel || currentDetection().class_label).color : '#d3e0e8';
     marker.setStyle({
-      radius: relevant || orphanRelevant ? 8 : 6,
+      radius: relevant || orphanRelevant ? 6 : 4.5,
       color,
       weight: relevant || orphanRelevant ? 3 : 2,
       fillColor: relevant || orphanRelevant ? color : '#111a2b',
     });
   });
   suggestionMarkers.forEach((marker, id) => {
-    const selected = id === state.selectedSuggestion;
-    marker.setStyle({ radius: selected ? 11 : 8, weight: selected ? 3 : 2 });
+    const node = state.suggestions.find((item) => item.id === id);
+    if (node) marker.setIcon(suggestionIcon(node, id === state.selectedSuggestion));
   });
 }
 
@@ -1138,7 +977,7 @@ function exportValidationReport() {
     conventions: {
       bbox: 'xyxy pixels',
       heading: 'degrees clockwise from true north',
-      image: '3840 × 1920 equirectangular',
+      image: 'Pixel dimensions supplied per detection in the capture CSV',
     },
     intersectionSettings: ANALYSIS,
     summary: {
@@ -1184,29 +1023,86 @@ $('#runValidation').addEventListener('click', () => {
 $('#previousCapture').addEventListener('click', () => navigateCapture(-1));
 $('#nextCapture').addEventListener('click', () => navigateCapture(1));
 $('#allBearings').addEventListener('change', updateMapSelection);
-$('#captureSearch').addEventListener('input', (event) => {
-  state.filter = event.target.value;
+$('#suggestionClassFilter').addEventListener('change', (event) => {
+  state.suggestionClass = event.target.value;
+  const selected = state.suggestions.find((node) => node.id === state.selectedSuggestion);
+  if (selected && state.suggestionClass && selected.classLabel !== state.suggestionClass) {
+    state.selectedSuggestion = null;
+  }
+  renderSuggestions();
+  rebuildSuggestionMarkers();
   renderTable();
+  updateMapSelection();
 });
 $('#clearSuggestionFilter').addEventListener('click', clearAnalysisFilter);
 $('#exportReport').addEventListener('click', exportValidationReport);
+$('#addNodeButton').addEventListener('click', () => {
+  const menu = $('#nodeClassMenu');
+  menu.hidden = !menu.hidden;
+  $('#addNodeButton').setAttribute('aria-expanded', String(!menu.hidden));
+});
+document.querySelectorAll('[data-node-class]').forEach((button) => {
+  button.addEventListener('click', () => {
+    state.pendingNodeClass = button.dataset.nodeClass;
+    $('#nodeClassMenu').hidden = true;
+    $('#addNodeButton').setAttribute('aria-expanded', 'false');
+    updateAddNodeControl();
+  });
+});
+$('#captureUpload').addEventListener('change', async (event) => {
+  const status = $('#captureUploadStatus');
+  status.classList.remove('error');
+  try {
+    const files = [...event.target.files];
+    const csvFiles = files.filter((file) => file.name.toLowerCase().endsWith('.csv'));
+    if (csvFiles.length !== 1) throw new Error('Select exactly one capture CSV and any images it references.');
+    const imageFiles = files.filter((file) => file.type.startsWith('image/') || /\.(avif|bmp|gif|jpe?g|png|svg|webp)$/i.test(file.name));
+    const rows = parseCsv(await csvFiles[0].text());
+    const loadedImages = loadCaptureDataset(rows, imageFiles, './dummy_captures/images/');
+    // status.textContent = `${csvFiles[0].name} · ${captures.length} captures · ${loadedImages} images linked from ./images`;
+  } catch (error) {
+    status.textContent = error.message;
+    status.classList.add('error');
+  } finally {
+    event.target.value = '';
+  }
+});
 $('#imageUpload').addEventListener('change', (event) => {
   const file = event.target.files[0];
   if (!file) return;
+  if (!currentCapture()) {
+    $('#stageTag').textContent = 'LOAD A CAPTURE CSV BEFORE SELECTING AN IMAGE';
+    event.target.value = '';
+    return;
+  }
   if (!file.type.startsWith('image/')) {
     $('#stageTag').textContent = 'PLEASE SELECT AN IMAGE FILE';
     return;
   }
-  const old = state.uploaded.get(state.capture);
-  if (old) URL.revokeObjectURL(old);
-  state.uploaded.set(state.capture, URL.createObjectURL(file));
+  const imageName = currentCapture().imageName;
+  const old = state.uploaded.get(imageName);
+  if (old?.startsWith('blob:')) URL.revokeObjectURL(old);
+  state.uploaded.set(imageName, URL.createObjectURL(file));
   updateImageStage();
   event.target.value = '';
 });
 document.addEventListener('keydown', (event) => {
   if (event.target.matches('input,textarea,select')) return;
+  if (event.key === 'Escape' && state.pendingNodeClass) {
+    state.pendingNodeClass = null;
+    updateAddNodeControl();
+    return;
+  }
   if (event.key === 'ArrowLeft') navigateCapture(-1);
   if (event.key === 'ArrowRight') navigateCapture(1);
+  if (event.key === 'ArrowDown') {
+    event.preventDefault();
+    navigateSuggestion(1);
+  }
+  if (event.key === 'ArrowUp') {
+    event.preventDefault();
+    navigateSuggestion(-1);
+  }
 });
 
 $('#captureCount').textContent = captures.length;
@@ -1215,4 +1111,4 @@ validateDataset();
 analyseIntersections();
 renderCapture();
 initMap();
-$('#lastValidated').textContent = 'Automatic checks and intersections complete';
+$('#lastValidated').textContent = 'Load a capture CSV to begin manual review';
