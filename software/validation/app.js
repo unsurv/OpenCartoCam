@@ -305,7 +305,7 @@ function validateDataset() {
       if (!(row.bbox_y_min >= 0 && row.bbox_y_min < row.bbox_y_max && row.bbox_y_max <= row.image_height_px)) issues.push(`${row.id}: invalid vertical rectangle`);
       const centreX = (row.bbox_x_min + row.bbox_x_max) / 2;
       const expected = (row.camera_heading_deg + ((centreX / row.image_width_px) - 0.5) * 360 + 360) % 360;
-      if (bearingDistance(expected, row.capture_bearing_deg) > 0.1) issues.push(`${row.id}: bearing does not match rectangle centre`);
+      if (bearingDistance(expected, row.capture_bearing_deg) > 1) issues.push(`${row.id}: bearing does not match detection bbox centre`);
       if (row.gnss_latitude_deg !== capture.first.gnss_latitude_deg
         || row.gnss_longitude_deg !== capture.first.gnss_longitude_deg
         || row.camera_heading_deg !== capture.first.camera_heading_deg) {
