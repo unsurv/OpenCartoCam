@@ -31,7 +31,6 @@ const state = {
   orphans: [],
   selectedSuggestion: null,
   selectedOrphan: null,
-  detectionToSuggestion: new Map(),
 };
 
 const escapeHtml = (value) => String(value).replace(/[&<>'"]/g, (character) => ({
@@ -266,10 +265,6 @@ function analyseIntersections() {
   }));
 
   state.suggestions = [...suggestions, ...state.manualSuggestions];
-  state.detectionToSuggestion = new Map();
-  suggestions.forEach((suggestion) => suggestion.detectionIds.forEach((id) => {
-    state.detectionToSuggestion.set(id, suggestion.id);
-  }));
   const linkedIds = new Set(suggestions.flatMap((suggestion) => suggestion.detectionIds));
   state.orphans = normalized.filter((row) => !linkedIds.has(row.id));
 
@@ -424,7 +419,7 @@ function loadCaptureDataset(rows, imageFiles, imageBaseUrl) {
   return captures.filter((capture) => state.uploaded.has(capture.imageName)).length;
 }
 
-// Image preview: detection overlay boxes, chip strip, and image stage.
+// Image preview: detection overlay boxes and image stage.
 function renderOverlay() {
   $('#detectionOverlay').innerHTML = currentCapture().detections.map((row) => {
     const color = classStyle(row.class_label).color;
@@ -441,20 +436,6 @@ function renderOverlay() {
       </g>`;
   }).join('');
   document.querySelectorAll('.detection-box').forEach((element) => {
-    element.addEventListener('click', () => selectDetection(element.dataset.detection));
-  });
-}
-
-function renderDetectionStrip() {
-  $('#detectionStrip').innerHTML = currentCapture().detections.map((row) => {
-    const nodeId = state.detectionToSuggestion.get(row.id);
-    return `
-      <button type="button" class="detection-chip ${row.id === state.detection ? 'active' : ''}" data-detection="${escapeHtml(row.id)}">
-        <strong>${escapeHtml(row.class_label)}</strong>
-        <span>${row.capture_bearing_deg.toFixed(2)}° · ${nodeId ? `node ${nodeId}` : 'orphaned'}</span>
-      </button>`;
-  }).join('');
-  document.querySelectorAll('.detection-chip').forEach((element) => {
     element.addEventListener('click', () => selectDetection(element.dataset.detection));
   });
 }
@@ -500,7 +481,6 @@ function renderCapture() {
     $('#metaGnss').textContent = '—';
     $('#metaHeading').textContent = '—';
     $('#detectionOverlay').innerHTML = '';
-    $('#detectionStrip').innerHTML = '';
     updateImageStage();
     renderTable();
     return;
@@ -514,7 +494,6 @@ function renderCapture() {
   $('#metaHeading').textContent = `${row.camera_heading_deg.toFixed(1)}° · ${row.gnss_altitude_m.toFixed(2)} m`;
   updateImageStage();
   renderOverlay();
-  renderDetectionStrip();
   renderTable();
   updateMapSelection();
 }
@@ -661,7 +640,6 @@ function navigateCapture(direction) {
 function selectDetection(id) {
   state.detection = id;
   renderOverlay();
-  renderDetectionStrip();
   updateMapSelection();
 }
 
@@ -1265,8 +1243,6 @@ document.querySelectorAll('.node-editor-range input[type="range"]').forEach((inp
   }, { passive: false });
 });
 $('#captureUpload').addEventListener('change', async (event) => {
-  const status = $('#captureUploadStatus');
-  status.classList.remove('error');
   try {
     const files = [...event.target.files];
     const csvFiles = files.filter((file) => file.name.toLowerCase().endsWith('.csv'));
@@ -1274,10 +1250,9 @@ $('#captureUpload').addEventListener('change', async (event) => {
     const imageFiles = files.filter((file) => file.type.startsWith('image/') || /\.(avif|bmp|gif|jpe?g|png|svg|webp)$/i.test(file.name));
     const rows = parseCsv(await csvFiles[0].text());
     loadCaptureDataset(rows, imageFiles, './dummy_captures/images/');
-    // status.textContent = `${csvFiles[0].name} · ${captures.length} captures · ${loadedImages} images linked from ./images`;
   } catch (error) {
-    status.textContent = error.message;
-    status.classList.add('error');
+    console.error(error);
+    $('#stageTag').textContent = `CSV ERROR · ${error.message}`;
   } finally {
     event.target.value = '';
   }
