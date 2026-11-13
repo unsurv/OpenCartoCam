@@ -1,5 +1,6 @@
 'use strict';
 
+// Tunables, class styling, and shared UI state.
 const PROJECT_REQUEST_ID = 'github/unsurv/OpenCartoCam';
 const ANALYSIS = {
   minimumIntersectionAngleDeg: 5,
@@ -45,6 +46,7 @@ const distance2 = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
 const bearingDistance = (a, b) => Math.abs((a - b + 540) % 360 - 180);
 const formatNodeAngle = (value) => (Number.isFinite(value) ? `${+value.toFixed(1)}°` : '—');
 
+// Dataset: typed detection rows grouped into captures (one per image).
 function normalizeDetections(rows) {
   return rows.map((row) => ({
     ...row,
@@ -83,6 +85,7 @@ function currentDetection() {
   return normalized.find((row) => row.id === state.detection) || currentCapture().detections[0];
 }
 
+// Local planar projection in metres around the dataset centroid.
 function localOrigin(rows) {
   return {
     lat: rows.reduce((sum, row) => sum + row.gnss_latitude_deg, 0) / rows.length,
@@ -108,6 +111,7 @@ function unproject(point, origin) {
   };
 }
 
+// Sight ray per detection: capture position plus bearing direction.
 function ray(row, origin) {
   const angle = row.capture_bearing_deg * Math.PI / 180;
   return {
@@ -117,6 +121,7 @@ function ray(row, origin) {
   };
 }
 
+// Ray geometry: pairwise intersection, least-squares cluster fit, and union-find clustering.
 function intersectPair(a, b) {
   if (a.row.image_name === b.row.image_name) return null;
   const denominator = cross2(a.direction, b.direction);
@@ -186,6 +191,7 @@ function clusterPairs(pairs) {
   return [...groups.values()];
 }
 
+// Per-class analysis: cluster rays into candidate OSM nodes with support and quality scoring.
 function calculateClassIntersections(classLabel, rows) {
   const origin = localOrigin(rows);
   const rays = rows.map((row) => ray(row, origin));
@@ -245,6 +251,7 @@ function calculateClassIntersections(classLabel, rows) {
   }).filter(Boolean);
 }
 
+// Full analysis pass: rebuilds suggestions, orphans, and the class filter options.
 function analyseIntersections() {
   const classes = [...new Set(normalized.map((row) => row.class_label))];
   const suggestions = classes.flatMap((classLabel) => {
@@ -285,6 +292,7 @@ function analyseIntersections() {
   renderTable();
 }
 
+// Dataset validation: duplicate IDs, value ranges, bbox, and heading-consistency checks.
 function validateDataset() {
   state.issues.clear();
   const ids = new Set();
@@ -316,6 +324,7 @@ function validateDataset() {
   renderTable();
 }
 
+// Minimal RFC-4180 CSV parser with required-header validation.
 function parseCsv(text) {
   const records = [];
   let record = [];
@@ -373,6 +382,7 @@ function imageBasename(imageName) {
   return imageName.split(/[\\/]/).pop();
 }
 
+// Replace the dataset: link images, reset state, re-run validation, analysis, and views.
 function loadCaptureDataset(rows, imageFiles, imageBaseUrl) {
   const nextNormalized = normalizeDetections(rows);
   const nextCaptures = buildCaptures(nextNormalized);
@@ -414,6 +424,7 @@ function loadCaptureDataset(rows, imageFiles, imageBaseUrl) {
   return captures.filter((capture) => state.uploaded.has(capture.imageName)).length;
 }
 
+// Image preview: detection overlay boxes, chip strip, and image stage.
 function renderOverlay() {
   $('#detectionOverlay').innerHTML = currentCapture().detections.map((row) => {
     const color = classStyle(row.class_label).color;
@@ -479,6 +490,7 @@ function updateImageStage() {
   }
 }
 
+// Current-capture view: metadata, preview, tables, and map sync.
 function renderCapture() {
   const capture = currentCapture();
   if (!capture) {
@@ -507,6 +519,7 @@ function renderCapture() {
   updateMapSelection();
 }
 
+// Suggested-nodes table with class filter.
 function filteredSuggestions() {
   return state.suggestionClass
     ? state.suggestions.filter((node) => node.classLabel === state.suggestionClass)
@@ -545,6 +558,7 @@ function renderSuggestions() {
   });
 }
 
+// Orphan list: detections not linked to any suggested node.
 function renderOrphans() {
   $('#orphanCount').textContent = state.orphans.length;
   $('#emptyOrphans').hidden = state.orphans.length > 0;
@@ -557,6 +571,7 @@ function renderOrphans() {
   });
 }
 
+// Capture table, filtered by the selected node or orphan.
 function filteredCaptures() {
   let rows = captures;
   const suggestion = state.suggestions.find((node) => node.id === state.selectedSuggestion);
@@ -612,6 +627,7 @@ function renderTable() {
   });
 }
 
+// Selection and navigation across captures, suggested nodes, and orphans.
 function selectCapture(index) {
   const capture = captures[index];
   if (!capture) return;
@@ -669,6 +685,7 @@ function selectSuggestion(id, { edit = false } = {}) {
   if (state.mapReady) map.panTo([suggestion.lat, suggestion.lon], { animate: false });
 }
 
+// "Add node" flow: class menu opened from the toolbar button or a map right-click.
 function showNodeClassMenu(clientX, clientY) {
   const menu = $('#nodeClassMenu');
   const floating = Number.isFinite(clientX) && Number.isFinite(clientY);
@@ -708,6 +725,7 @@ function ensureSuggestionClassOption(classLabel) {
   }
 }
 
+// Create a manually placed node.
 function addManualSuggestion(classLabel, latLng) {
   const node = {
     id: `M${String(state.manualSuggestions.length + 1).padStart(2, '0')}`,
@@ -737,6 +755,7 @@ function addManualSuggestion(classLabel, latLng) {
   selectSuggestion(node.id);
 }
 
+// Node editor window (type, direction, mount, angle, height).
 function editingNode() {
   return state.suggestions.find((node) => node.id === state.editingNode) || null;
 }
@@ -844,8 +863,8 @@ const IdentifiedTileLayer = L.TileLayer.extend({
   },
 });
 
+// Leaflet map state and layers.
 let map = null;
-let routeLayer = null;
 let captureLayer = null;
 let suggestionLayer = null;
 let viewingAngleLayer = null;
@@ -884,6 +903,7 @@ function viewingConeLatLngs(node) {
   return points;
 }
 
+// Viewing-angle overlays: cones for fixed cameras, circles for domes.
 function rebuildViewingAngles() {
   if (!map) return;
   if (viewingAngleLayer) viewingAngleLayer.clearLayers();
@@ -909,6 +929,7 @@ function mapStatus(text) {
   $('#mapStatus').innerHTML = `<span>${text}</span>`;
 }
 
+// Map geometry helpers: capture positions, bearing endpoints, and ray overlays.
 function captureLatLng(capture) {
   return [capture.first.gnss_latitude_deg, capture.first.gnss_longitude_deg];
 }
@@ -941,6 +962,7 @@ function addRays(group, rows, selected = false) {
   });
 }
 
+// Draggable suggested-node markers; dragging writes the new position back to the node.
 function suggestionIcon(node, selected) {
   const color = classStyle(node.classLabel).color;
   const size = selected ? 16.5 : 12;
@@ -978,11 +1000,11 @@ function rebuildSuggestionMarkers() {
   rebuildViewingAngles();
 }
 
+// Map lifecycle: teardown and rebuild.
 function refreshMap() {
   if (map) map.remove();
   map = null;
   state.mapReady = false;
-  routeLayer = null;
   captureLayer = null;
   suggestionLayer = null;
   viewingAngleLayer = null;
@@ -1023,11 +1045,11 @@ function initMap() {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       crossOrigin: false,
     });
-    tiles.on('load', () => mapStatus(projectHeaderFallback ? 'OSM · IMAGE FALLBACK' : 'OSM · PROJECT ID SENT'));
+    // tiles.on('load', () => mapStatus(projectHeaderFallback ? 'captures' : 'captures'));
     tiles.on('tileerror', () => mapStatus('OSM TILES UNAVAILABLE · GEOMETRY ACTIVE'));
     tiles.addTo(map);
 
-    routeLayer = L.polyline(captures.map(captureLatLng), {
+    L.polyline(captures.map(captureLatLng), {
       color: '#8ca4b8', weight: 3, dashArray: '7 7', opacity: 0.9,
     }).addTo(map);
     raysLayer = L.layerGroup().addTo(map);
@@ -1060,7 +1082,7 @@ function initMap() {
       showNodeClassMenu(event.originalEvent.clientX, event.originalEvent.clientY);
     });
     state.mapReady = true;
-    mapStatus('OSM · PROJECT ID SENT');
+    mapStatus('');
     updateAddNodeControl();
     updateMapSelection();
   } catch (error) {
@@ -1069,6 +1091,7 @@ function initMap() {
   }
 }
 
+// Sync map highlights (rays, markers) with the current selection.
 function updateMapSelection() {
   if (!state.mapReady || !map) return;
   const selectedLatLng = captureLatLng(currentCapture());
@@ -1102,6 +1125,7 @@ function updateMapSelection() {
   });
 }
 
+// Downloadable JSON validation report.
 function exportValidationReport() {
   const report = {
     generatedAt: new Date().toISOString(),
@@ -1146,6 +1170,7 @@ function exportValidationReport() {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
+// UI event wiring.
 $('#runValidation').addEventListener('click', () => {
   validateDataset();
   analyseIntersections();
@@ -1248,7 +1273,7 @@ $('#captureUpload').addEventListener('change', async (event) => {
     if (csvFiles.length !== 1) throw new Error('Select exactly one capture CSV and any images it references.');
     const imageFiles = files.filter((file) => file.type.startsWith('image/') || /\.(avif|bmp|gif|jpe?g|png|svg|webp)$/i.test(file.name));
     const rows = parseCsv(await csvFiles[0].text());
-    const loadedImages = loadCaptureDataset(rows, imageFiles, './dummy_captures/images/');
+    loadCaptureDataset(rows, imageFiles, './dummy_captures/images/');
     // status.textContent = `${csvFiles[0].name} · ${captures.length} captures · ${loadedImages} images linked from ./images`;
   } catch (error) {
     status.textContent = error.message;
@@ -1276,6 +1301,7 @@ $('#imageUpload').addEventListener('change', (event) => {
   updateImageStage();
   event.target.value = '';
 });
+// Global keyboard shortcuts (arrow-key map panning is disabled in the map options).
 document.addEventListener('keydown', (event) => {
   if (event.target.matches('input,textarea,select')) return;
   if (event.key === 'Escape') {
@@ -1303,6 +1329,7 @@ document.addEventListener('keydown', (event) => {
   }
 });
 
+// Boot with an empty dataset; all views render their empty states.
 $('#captureCount').textContent = captures.length;
 $('#detectionCount').textContent = normalized.length;
 validateDataset();
