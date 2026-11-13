@@ -246,6 +246,7 @@ function calculateClassIntersections(classLabel, rows) {
       mount: '',
       angle: null,
       height: null,
+      confirmed: false,
     };
   }).filter(Boolean);
 }
@@ -524,6 +525,8 @@ function renderSuggestions() {
       <td>${formatNodeAngle(node.direction)}</td>
       <td>${escapeHtml(node.mount || '—')}</td>
       <td>${formatNodeAngle(node.angle)}</td>
+      <td><button type="button" class="confirm-node ${node.confirmed ? 'confirmed' : ''}" data-confirm="${node.id}"
+        ${isNodeComplete(node) ? '' : 'disabled'} title="${confirmHint(node)}">✓</button></td>
     </tr>`).join('');
   document.querySelectorAll('#suggestionTableBody tr').forEach((element) => {
     const activate = () => selectSuggestion(element.dataset.suggestion, { edit: true });
@@ -533,6 +536,12 @@ function renderSuggestions() {
         event.preventDefault();
         activate();
       }
+    });
+  });
+  document.querySelectorAll('#suggestionTableBody .confirm-node').forEach((button) => {
+    button.addEventListener('click', (event) => {
+      event.stopPropagation();
+      toggleNodeConfirmed(button.dataset.confirm);
     });
   });
 }
@@ -719,6 +728,7 @@ function addManualSuggestion(classLabel, latLng) {
     mount: '',
     angle: 15,
     height: 5,
+    confirmed: false,
     manual: true,
   };
   state.manualSuggestions.push(node);
@@ -731,6 +741,29 @@ function addManualSuggestion(classLabel, latLng) {
   rebuildSuggestionMarkers();
   renderTable();
   selectSuggestion(node.id);
+}
+
+// A node can only be confirmed once all data for its viewing angle is set.
+const isNodeComplete = (node) => (classStyle(node.classLabel).key === 'dome'
+  ? Number.isFinite(node.height)
+  : Number.isFinite(node.direction) && Number.isFinite(node.angle) && Number.isFinite(node.height));
+
+function confirmHint(node) {
+  if (isNodeComplete(node)) return node.confirmed ? 'Mark as not validated' : 'Mark as validated';
+  const missing = classStyle(node.classLabel).key === 'dome' ? 'height' : 'direction, angle and height';
+  return `Set ${missing} to enable validation`;
+}
+
+function syncNodeConfirmation(node) {
+  if (!isNodeComplete(node)) node.confirmed = false;
+}
+
+function toggleNodeConfirmed(id) {
+  const node = state.suggestions.find((item) => item.id === id);
+  if (!node || !isNodeComplete(node)) return;
+  node.confirmed = !node.confirmed;
+  renderSuggestions();
+  renderNodeEditor();
 }
 
 // Node editor window (type, direction, mount, angle, height).
@@ -765,6 +798,11 @@ function renderNodeEditor() {
   $('#nodeEditAngleValue').textContent = formatNodeAngle(node.angle);
   $('#nodeEditHeight').value = node.height ?? 5;
   $('#nodeEditHeightValue').textContent = formatNodeHeight(node.height);
+  syncNodeConfirmation(node);
+  const confirmButton = $('#nodeEditConfirm');
+  confirmButton.disabled = !isNodeComplete(node);
+  confirmButton.classList.toggle('confirmed', Boolean(node.confirmed));
+  confirmButton.title = confirmHint(node);
 }
 
 function navigateSuggestion(direction) {
@@ -1193,6 +1231,7 @@ $('#nodeEditorClose').addEventListener('click', () => {
   state.editingNode = null;
   renderNodeEditor();
 });
+$('#nodeEditConfirm').addEventListener('click', () => toggleNodeConfirmed(state.editingNode));
 $('#nodeEditType').addEventListener('change', (event) => {
   const node = editingNode();
   if (!node) return;
@@ -1210,6 +1249,7 @@ $('#nodeEditDirection').addEventListener('input', (event) => {
   node.direction = Number(event.target.value);
   $('#nodeEditDirectionValue').textContent = formatNodeAngle(node.direction);
   renderSuggestions();
+  renderNodeEditor();
   rebuildViewingAngles();
 });
 $('#nodeEditMount').addEventListener('change', (event) => {
@@ -1224,6 +1264,7 @@ $('#nodeEditAngle').addEventListener('input', (event) => {
   node.angle = Number(event.target.value);
   $('#nodeEditAngleValue').textContent = formatNodeAngle(node.angle);
   renderSuggestions();
+  renderNodeEditor();
   rebuildViewingAngles();
 });
 $('#nodeEditHeight').addEventListener('input', (event) => {
@@ -1231,6 +1272,7 @@ $('#nodeEditHeight').addEventListener('input', (event) => {
   if (!node) return;
   node.height = Number(event.target.value);
   $('#nodeEditHeightValue').textContent = formatNodeHeight(node.height);
+  renderNodeEditor();
   rebuildViewingAngles();
 });
 document.querySelectorAll('.node-editor-range input[type="range"]').forEach((input) => {

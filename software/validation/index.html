@@ -79,7 +79,10 @@
           <div class="node-editor" id="nodeEditor" hidden>
             <div class="node-editor-header">
               <strong id="nodeEditorTitle">Node</strong>
-              <button class="button compact icon" id="nodeEditorClose" type="button" aria-label="Close node editor">×</button>
+              <span class="node-editor-actions">
+                <button class="confirm-node" id="nodeEditConfirm" type="button" title="Mark as validated">✓</button>
+                <button class="button compact icon" id="nodeEditorClose" type="button" aria-label="Close node editor">×</button>
+              </span>
             </div>
             <label class="node-editor-field">Type
               <select id="nodeEditType">
@@ -137,7 +140,7 @@
         </div>
         <div class="table-scroll">
           <table class="suggestion-table">
-            <thead><tr><th>Class</th><th>Latitude</th><th>Longitude</th><th>Amount</th><th>Quality</th><th>Direction</th><th>Mount</th><th>Angle</th></tr></thead>
+            <thead><tr><th>Class</th><th>Latitude</th><th>Longitude</th><th>Amount</th><th>Quality</th><th>Direction</th><th>Mount</th><th>Angle</th><th>Validated</th></tr></thead>
             <tbody id="suggestionTableBody"></tbody>
           </table>
           <div class="empty-state" id="emptySuggestions" hidden>No multi-capture intersections found.</div>

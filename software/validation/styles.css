@@ -76,7 +76,7 @@ h1{font-size:18px;line-height:1.25;letter-spacing:.04em;font-weight:650}
 /* Intersection analysis layout */
 .analysis-grid {
   display: grid;
-  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
   gap: 16px;
   margin-top: 16px;
   align-items: start;
@@ -126,6 +126,23 @@ h1{font-size:18px;line-height:1.25;letter-spacing:.04em;font-weight:650}
 .quality-high { color: var(--success); }
 .quality-medium { color: var(--warning); }
 .quality-low { color: var(--danger); }
+
+/* Per-node validation checkmark; greyed out until the viewing-angle data is complete */
+.confirm-node {
+  min-width: 30px;
+  min-height: 26px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--success);
+  font-size: 13px;
+  line-height: 1;
+  padding: 2px 6px;
+  transition: background .15s ease, border-color .15s ease, color .15s ease;
+}
+.confirm-node:hover:not(:disabled) { border-color: var(--success); }
+.confirm-node:disabled { color: var(--muted); opacity: .45; cursor: not-allowed; }
+.confirm-node.confirmed { background: var(--success); border-color: var(--success); color: var(--p-ink-950); }
+.node-editor-actions { display: flex; align-items: center; gap: 6px; }
 
 .orphan-section { border-top: 1px solid var(--border); padding: 14px 16px 16px; }
 .orphan-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
