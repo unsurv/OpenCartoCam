@@ -66,7 +66,7 @@
 
       <article class="panel">
         <div class="panel-header">
-          <label class="layer-toggle"><input type="checkbox" id="allBearings">Show all bearing rays</label>
+          <label class="layer-toggle"><input type="checkbox" id="showViewingAngles" checked>Show viewing angles</label>
         </div>
         <div class="map-wrap">
           <div id="map" aria-label="OpenStreetMap capture map"></div>
@@ -77,6 +77,45 @@
               <button type="button" role="menuitem" data-node-class="dome surveillance camera">dome surveillance camera</button>
             </div>
             <span class="placement-hint" id="nodePlacementHint" hidden>Click map to place</span>
+          </div>
+          <div class="node-editor" id="nodeEditor" hidden>
+            <div class="node-editor-header">
+              <strong id="nodeEditorTitle">Node</strong>
+              <button class="button compact icon" id="nodeEditorClose" type="button" aria-label="Close node editor">×</button>
+            </div>
+            <label class="node-editor-field">Type
+              <select id="nodeEditType">
+                <option value="surveillance camera">surveillance camera</option>
+                <option value="dome surveillance camera">dome surveillance camera</option>
+              </select>
+            </label>
+            <label class="node-editor-field fixed-only">Direction
+              <span class="node-editor-range">
+                <input id="nodeEditDirection" type="range" min="0" max="360" step="1">
+                <output id="nodeEditDirectionValue" for="nodeEditDirection">—</output>
+              </span>
+            </label>
+            <label class="node-editor-field">Mount
+              <select id="nodeEditMount">
+                <option value="">—</option>
+                <option value="pole">pole</option>
+                <option value="wall">wall</option>
+                <option value="ceiling">ceiling</option>
+                <option value="street_lamp">street_lamp</option>
+              </select>
+            </label>
+            <label class="node-editor-field fixed-only">Angle
+              <span class="node-editor-range">
+                <input id="nodeEditAngle" type="range" min="0" max="90" step="5" value="15">
+                <output id="nodeEditAngleValue" for="nodeEditAngle">—</output>
+              </span>
+            </label>
+            <label class="node-editor-field">Height
+              <span class="node-editor-range">
+                <input id="nodeEditHeight" type="range" min="0" max="10" step="1" value="5">
+                <output id="nodeEditHeightValue" for="nodeEditHeight">—</output>
+              </span>
+            </label>
           </div>
           <div class="map-status" id="mapStatus"><span>Loading local map renderer…</span></div>
         </div>
@@ -100,7 +139,7 @@
         </div>
         <div class="table-scroll">
           <table class="suggestion-table">
-            <thead><tr><th>Node</th><th>Class</th><th>Latitude</th><th>Longitude</th><th>Amount</th><th>RMS</th><th>Quality</th></tr></thead>
+            <thead><tr><th>Class</th><th>Latitude</th><th>Longitude</th><th>Amount</th><th>Quality</th><th>Direction</th><th>Mount</th><th>Angle</th></tr></thead>
             <tbody id="suggestionTableBody"></tbody>
           </table>
           <div class="empty-state" id="emptySuggestions" hidden>No multi-capture intersections found.</div>
@@ -126,7 +165,7 @@
         </div>
         <div class="table-scroll">
           <table class="capture-table">
-            <thead><tr><th>Capture</th><th>Image</th><th>Latitude</th><th>Longitude</th><th>Moving</th><th>Detections</th><th>Capture bearings</th><th>Validation</th></tr></thead>
+            <thead><tr><th>Capture</th><th>Image</th><th>Latitude</th><th>Longitude</th><th>Detections</th><th>Capture bearings</th><th>Validation</th></tr></thead>
             <tbody id="captureTableBody"></tbody>
           </table>
           <div class="empty-state" id="emptyState" hidden>No captures match this filter.</div>
@@ -138,6 +177,10 @@
       </article>
     </section>
   </main>
+
+  <footer class="app-footer">
+    Map data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> · Camera viewing-angle rendering adapted from <a href="https://github.com/khris78/osmcamera">khris78/osmcamera</a>
+  </footer>
 
   <script src="./vendor/mapbox.js"></script>
   <script src="./app.js"></script>

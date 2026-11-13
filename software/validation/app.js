@@ -25,6 +25,8 @@ const state = {
   suggestions: [],
   manualSuggestions: [],
   pendingNodeClass: null,
+  pendingLatLng: null,
+  editingNode: null,
   orphans: [],
   selectedSuggestion: null,
   selectedOrphan: null,
@@ -41,6 +43,7 @@ const classStyle = (classLabel) => CLASS_STYLE[classLabel] || {
 const cross2 = (a, b) => a.x * b.y - a.y * b.x;
 const distance2 = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
 const bearingDistance = (a, b) => Math.abs((a - b + 540) % 360 - 180);
+const formatNodeAngle = (value) => (Number.isFinite(value) ? `${+value.toFixed(1)}°` : '—');
 
 function normalizeDetections(rows) {
   return rows.map((row) => ({
@@ -234,6 +237,10 @@ function calculateClassIntersections(classLabel, rows) {
       quality,
       detectionIds: supportingRows.map((row) => row.id),
       captureNames,
+      direction: null,
+      mount: '',
+      angle: null,
+      height: null,
     };
   }).filter(Boolean);
 }
@@ -390,6 +397,8 @@ function loadCaptureDataset(rows, imageFiles, imageBaseUrl) {
   state.suggestionClass = '';
   state.manualSuggestions = [];
   state.pendingNodeClass = null;
+  state.pendingLatLng = null;
+  state.editingNode = null;
   state.selectedSuggestion = null;
   state.selectedOrphan = null;
   state.mapReady = false;
@@ -399,6 +408,7 @@ function loadCaptureDataset(rows, imageFiles, imageBaseUrl) {
   analyseIntersections();
   renderCapture();
   updateAddNodeControl();
+  renderNodeEditor();
   refreshMap();
   $('#lastValidated').textContent = 'Capture CSV loaded · ready for manual review';
   return captures.filter((capture) => state.uploaded.has(capture.imageName)).length;
@@ -514,16 +524,17 @@ function renderSuggestions() {
     : 'No multi-capture intersections found.';
   $('#suggestionTableBody').innerHTML = rows.map((node) => `
     <tr data-suggestion="${node.id}" tabindex="0" class="${node.id === state.selectedSuggestion ? 'selected' : ''}" aria-selected="${node.id === state.selectedSuggestion}">
-      <td class="node-cell">${node.id}</td>
       <td>${escapeHtml(classStyle(node.classLabel).short)}</td>
       <td>${node.lat.toFixed(7)}</td>
       <td>${node.lon.toFixed(7)}</td>
       <td>${node.support} captures</td>
-      <td>${node.rms.toFixed(2)} m</td>
       <td class="quality-${node.quality.toLowerCase()}">${node.quality}</td>
+      <td>${formatNodeAngle(node.direction)}</td>
+      <td>${escapeHtml(node.mount || '—')}</td>
+      <td>${formatNodeAngle(node.angle)}</td>
     </tr>`).join('');
   document.querySelectorAll('#suggestionTableBody tr').forEach((element) => {
-    const activate = () => selectSuggestion(element.dataset.suggestion);
+    const activate = () => selectSuggestion(element.dataset.suggestion, { edit: true });
     element.addEventListener('click', activate);
     element.addEventListener('keydown', (event) => {
       if (event.key === 'Enter' || event.key === ' ') {
@@ -583,7 +594,6 @@ function renderTable() {
         <td class="primary-cell">${escapeHtml(capture.imageName)}</td>
         <td>${row.gnss_latitude_deg.toFixed(7)}</td>
         <td>${row.gnss_longitude_deg.toFixed(7)}</td>
-        <td>${row.camera_heading_deg.toFixed(1)}°</td>
         <td>${capture.detections.length} · ${detectionLabels}</td>
         <td>${capture.detections.map((item) => `${item.capture_bearing_deg.toFixed(2)}°`).join(' / ')}</td>
         <td><span class="badge ${issues.length ? 'error' : ''}" title="${escapeHtml(issues.join('\n'))}">${issues.length ? `${issues.length} issues` : 'Pass'}</span></td>
@@ -639,11 +649,15 @@ function selectDetection(id) {
   updateMapSelection();
 }
 
-function selectSuggestion(id) {
+function selectSuggestion(id, { edit = false } = {}) {
   const suggestion = state.suggestions.find((node) => node.id === id);
   if (!suggestion) return;
   state.selectedSuggestion = id;
   state.selectedOrphan = null;
+  if (edit) {
+    state.editingNode = id;
+    renderNodeEditor();
+  }
   const capture = captures.find((item) => suggestion.captureNames.includes(item.imageName));
   if (capture) {
     state.capture = capture.index;
@@ -655,16 +669,43 @@ function selectSuggestion(id) {
   if (state.mapReady) map.panTo([suggestion.lat, suggestion.lon], { animate: false });
 }
 
+function showNodeClassMenu(clientX, clientY) {
+  const menu = $('#nodeClassMenu');
+  const floating = Number.isFinite(clientX) && Number.isFinite(clientY);
+  menu.classList.toggle('floating', floating);
+  menu.style.left = floating ? `${clientX}px` : '';
+  menu.style.top = floating ? `${clientY}px` : '';
+  menu.hidden = false;
+  $('#addNodeButton').setAttribute('aria-expanded', 'true');
+}
+
+function hideNodeClassMenu() {
+  const menu = $('#nodeClassMenu');
+  menu.classList.remove('floating');
+  menu.style.left = '';
+  menu.style.top = '';
+  menu.hidden = true;
+  state.pendingLatLng = null;
+  $('#addNodeButton').setAttribute('aria-expanded', 'false');
+}
+
 function updateAddNodeControl() {
   const placing = Boolean(state.pendingNodeClass && state.mapReady);
   $('#addNodeButton').disabled = !state.mapReady;
   $('#addNodeButton').classList.toggle('active', placing);
   $('#nodePlacementHint').hidden = !placing;
-  if (!state.mapReady) {
-    $('#nodeClassMenu').hidden = true;
-    $('#addNodeButton').setAttribute('aria-expanded', 'false');
-  }
+  if (!state.mapReady) hideNodeClassMenu();
   if (map) map.getContainer().classList.toggle('placing-node', placing);
+}
+
+function ensureSuggestionClassOption(classLabel) {
+  if (state.suggestionClass && state.suggestionClass !== classLabel) {
+    state.suggestionClass = '';
+    $('#suggestionClassFilter').value = '';
+  }
+  if (![...$('#suggestionClassFilter').options].some((option) => option.value === classLabel)) {
+    $('#suggestionClassFilter').append(new Option(classLabel, classLabel));
+  }
 }
 
 function addManualSuggestion(classLabel, latLng) {
@@ -678,24 +719,55 @@ function addManualSuggestion(classLabel, latLng) {
     quality: 'Manual',
     detectionIds: [],
     captureNames: [],
+    direction: null,
+    mount: '',
+    angle: 15,
+    height: 5,
     manual: true,
   };
   state.manualSuggestions.push(node);
   state.suggestions.push(node);
   state.pendingNodeClass = null;
   updateAddNodeControl();
-  if (state.suggestionClass && state.suggestionClass !== classLabel) {
-    state.suggestionClass = '';
-    $('#suggestionClassFilter').value = '';
-  }
-  if (![...$('#suggestionClassFilter').options].some((option) => option.value === classLabel)) {
-    $('#suggestionClassFilter').append(new Option(classLabel, classLabel));
-  }
+  ensureSuggestionClassOption(classLabel);
   $('#objectCount').textContent = state.suggestions.length;
   renderSuggestions();
   rebuildSuggestionMarkers();
   renderTable();
   selectSuggestion(node.id);
+}
+
+function editingNode() {
+  return state.suggestions.find((node) => node.id === state.editingNode) || null;
+}
+
+function renderNodeEditor() {
+  const node = editingNode();
+  const editor = $('#nodeEditor');
+  if (!node) {
+    editor.hidden = true;
+    return;
+  }
+  const typeSelect = $('#nodeEditType');
+  if (![...typeSelect.options].some((option) => option.value === node.classLabel)) {
+    typeSelect.append(new Option(node.classLabel, node.classLabel));
+  }
+  const mountSelect = $('#nodeEditMount');
+  if (node.mount && ![...mountSelect.options].some((option) => option.value === node.mount)) {
+    mountSelect.append(new Option(node.mount, node.mount));
+  }
+  const dome = classStyle(node.classLabel).key === 'dome';
+  editor.querySelectorAll('.fixed-only').forEach((field) => { field.hidden = dome; });
+  editor.hidden = false;
+  $('#nodeEditorTitle').textContent = `Node ${node.id}`;
+  typeSelect.value = node.classLabel;
+  $('#nodeEditDirection').value = node.direction ?? 0;
+  $('#nodeEditDirectionValue').textContent = formatNodeAngle(node.direction);
+  mountSelect.value = node.mount ?? '';
+  $('#nodeEditAngle').value = node.angle ?? 15;
+  $('#nodeEditAngleValue').textContent = formatNodeAngle(node.angle);
+  $('#nodeEditHeight').value = node.height ?? 5;
+  $('#nodeEditHeightValue').textContent = formatNodeHeight(node.height);
 }
 
 function navigateSuggestion(direction) {
@@ -723,6 +795,8 @@ function selectOrphan(id) {
 function clearAnalysisFilter() {
   state.selectedSuggestion = null;
   state.selectedOrphan = null;
+  state.editingNode = null;
+  renderNodeEditor();
   renderSuggestions();
   renderOrphans();
   renderTable();
@@ -774,11 +848,61 @@ let map = null;
 let routeLayer = null;
 let captureLayer = null;
 let suggestionLayer = null;
+let viewingAngleLayer = null;
 let raysLayer = null;
 let selectedRayLayer = null;
 let selectedCaptureMarker = null;
 const captureMarkers = new Map();
 const suggestionMarkers = new Map();
+
+// Viewing-angle geometry adapted from khris78/osmcamera (0.000063° ≈ 7 m base radius).
+const VIEWING_ANGLE = {
+  baseRadiusM: 7,
+  defaultHeightM: 5,
+  fullConeTiltDeg: 15,
+  fanOffsetsRad: [-0.5, -0.3, -0.1, 0.1, 0.3, 0.5],
+};
+
+const nodeHeight = (node) => (Number.isFinite(node.height) ? node.height : VIEWING_ANGLE.defaultHeightM);
+const formatNodeHeight = (value) => (Number.isFinite(value) ? `${+value.toFixed(1)} m` : '—');
+
+function viewingConeLatLngs(node) {
+  let factor = 1;
+  if (Number.isFinite(node.angle) && Math.abs(node.angle) > VIEWING_ANGLE.fullConeTiltDeg) {
+    factor = Math.cos(((Math.abs(node.angle) - VIEWING_ANGLE.fullConeTiltDeg) * Math.PI) / 180);
+  }
+  const reach = VIEWING_ANGLE.baseRadiusM * nodeHeight(node) * factor;
+  const points = [[node.lat, node.lon]];
+  VIEWING_ANGLE.fanOffsetsRad.forEach((offset) => {
+    const point = destination({
+      gnss_latitude_deg: node.lat,
+      gnss_longitude_deg: node.lon,
+      capture_bearing_deg: node.direction + (offset * 180) / Math.PI,
+    }, reach);
+    points.push([point.lat, point.lon]);
+  });
+  return points;
+}
+
+function rebuildViewingAngles() {
+  if (!map) return;
+  if (viewingAngleLayer) viewingAngleLayer.clearLayers();
+  else viewingAngleLayer = L.featureGroup().addTo(map);
+  if (!$('#showViewingAngles').checked) return;
+  filteredSuggestions().forEach((node) => {
+    const color = classStyle(node.classLabel).color;
+    const style = { color, weight: 1, fillColor: color, fillOpacity: 0.1, interactive: false };
+    if (classStyle(node.classLabel).key === 'dome') {
+      L.circle([node.lat, node.lon], {
+        ...style,
+        radius: VIEWING_ANGLE.baseRadiusM * nodeHeight(node),
+      }).addTo(viewingAngleLayer);
+    } else if (Number.isFinite(node.direction)) {
+      L.polygon(viewingConeLatLngs(node), style).addTo(viewingAngleLayer);
+    }
+  });
+  viewingAngleLayer.bringToBack();
+}
 
 function mapStatus(text) {
   $('#mapStatus').className = 'map-status ready';
@@ -839,18 +963,19 @@ function rebuildSuggestionMarkers() {
       draggable: true,
       icon: suggestionIcon(node, node.id === state.selectedSuggestion),
     }).addTo(suggestionLayer);
-    marker.bindPopup(`<strong>Suggested node ${node.id}</strong><br>${escapeHtml(node.classLabel)}<br><small>${node.support} captures · ${node.rms.toFixed(2)} m RMS</small>`);
-    marker.on('click', () => selectSuggestion(node.id));
+    marker.on('click', () => selectSuggestion(node.id, { edit: true }));
     marker.on('dragend', () => {
       const position = marker.getLatLng();
       node.lat = position.lat;
       node.lon = position.lng;
       renderSuggestions();
       renderTable();
+      rebuildViewingAngles();
       updateMapSelection();
     });
     suggestionMarkers.set(node.id, marker);
   });
+  rebuildViewingAngles();
 }
 
 function refreshMap() {
@@ -860,6 +985,7 @@ function refreshMap() {
   routeLayer = null;
   captureLayer = null;
   suggestionLayer = null;
+  viewingAngleLayer = null;
   raysLayer = null;
   selectedRayLayer = null;
   selectedCaptureMarker = null;
@@ -886,6 +1012,7 @@ function initMap() {
       zoomControl: false,
       attributionControl: true,
       worldCopyJump: false,
+      keyboard: false,
       maxZoom: 24,
     }).setView([centre.gnss_latitude_deg, centre.gnss_longitude_deg], 24);
     L.control.zoom({ position: 'bottomright' }).addTo(map);
@@ -925,13 +1052,19 @@ function initMap() {
     state.suggestions.forEach((node) => bounds.extend([node.lat, node.lon]));
     map.fitBounds(bounds, { padding: [42, 42], maxZoom: 24, animate: false });
     map.on('click', (event) => {
+      hideNodeClassMenu();
       if (state.pendingNodeClass) addManualSuggestion(state.pendingNodeClass, event.latlng);
+    });
+    map.on('contextmenu', (event) => {
+      state.pendingLatLng = event.latlng;
+      showNodeClassMenu(event.originalEvent.clientX, event.originalEvent.clientY);
     });
     state.mapReady = true;
     mapStatus('OSM · PROJECT ID SENT');
     updateAddNodeControl();
     updateMapSelection();
   } catch (error) {
+    console.error('Map initialization failed', error);
     $('#mapStatus').innerHTML = '<span>Map initialization failed. Local analysis remains available.</span>';
   }
 }
@@ -947,7 +1080,7 @@ function updateMapSelection() {
   let rows;
   if (suggestion) rows = normalized.filter((row) => suggestion.detectionIds.includes(row.id));
   else if (state.selectedOrphan) rows = normalized.filter((row) => row.id === state.selectedOrphan);
-  else rows = $('#allBearings').checked ? normalized : currentCapture().detections;
+  else rows = currentCapture().detections;
   addRays(raysLayer, rows);
   addRays(selectedRayLayer, [currentDetection()], true);
 
@@ -1022,7 +1155,7 @@ $('#runValidation').addEventListener('click', () => {
 });
 $('#previousCapture').addEventListener('click', () => navigateCapture(-1));
 $('#nextCapture').addEventListener('click', () => navigateCapture(1));
-$('#allBearings').addEventListener('change', updateMapSelection);
+$('#showViewingAngles').addEventListener('change', rebuildViewingAngles);
 $('#suggestionClassFilter').addEventListener('change', (event) => {
   state.suggestionClass = event.target.value;
   const selected = state.suggestions.find((node) => node.id === state.selectedSuggestion);
@@ -1037,17 +1170,74 @@ $('#suggestionClassFilter').addEventListener('change', (event) => {
 $('#clearSuggestionFilter').addEventListener('click', clearAnalysisFilter);
 $('#exportReport').addEventListener('click', exportValidationReport);
 $('#addNodeButton').addEventListener('click', () => {
-  const menu = $('#nodeClassMenu');
-  menu.hidden = !menu.hidden;
-  $('#addNodeButton').setAttribute('aria-expanded', String(!menu.hidden));
+  if ($('#nodeClassMenu').hidden) {
+    state.pendingLatLng = null;
+    showNodeClassMenu();
+  } else hideNodeClassMenu();
 });
 document.querySelectorAll('[data-node-class]').forEach((button) => {
   button.addEventListener('click', () => {
-    state.pendingNodeClass = button.dataset.nodeClass;
-    $('#nodeClassMenu').hidden = true;
-    $('#addNodeButton').setAttribute('aria-expanded', 'false');
-    updateAddNodeControl();
+    const latLng = state.pendingLatLng;
+    hideNodeClassMenu();
+    if (latLng) addManualSuggestion(button.dataset.nodeClass, latLng);
+    else {
+      state.pendingNodeClass = button.dataset.nodeClass;
+      updateAddNodeControl();
+    }
   });
+});
+$('#nodeEditorClose').addEventListener('click', () => {
+  state.editingNode = null;
+  renderNodeEditor();
+});
+$('#nodeEditType').addEventListener('change', (event) => {
+  const node = editingNode();
+  if (!node) return;
+  node.classLabel = event.target.value;
+  ensureSuggestionClassOption(node.classLabel);
+  renderNodeEditor();
+  renderSuggestions();
+  rebuildSuggestionMarkers();
+  renderTable();
+  updateMapSelection();
+});
+$('#nodeEditDirection').addEventListener('input', (event) => {
+  const node = editingNode();
+  if (!node) return;
+  node.direction = Number(event.target.value);
+  $('#nodeEditDirectionValue').textContent = formatNodeAngle(node.direction);
+  renderSuggestions();
+  rebuildViewingAngles();
+});
+$('#nodeEditMount').addEventListener('change', (event) => {
+  const node = editingNode();
+  if (!node) return;
+  node.mount = event.target.value;
+  renderSuggestions();
+});
+$('#nodeEditAngle').addEventListener('input', (event) => {
+  const node = editingNode();
+  if (!node) return;
+  node.angle = Number(event.target.value);
+  $('#nodeEditAngleValue').textContent = formatNodeAngle(node.angle);
+  renderSuggestions();
+  rebuildViewingAngles();
+});
+$('#nodeEditHeight').addEventListener('input', (event) => {
+  const node = editingNode();
+  if (!node) return;
+  node.height = Number(event.target.value);
+  $('#nodeEditHeightValue').textContent = formatNodeHeight(node.height);
+  rebuildViewingAngles();
+});
+document.querySelectorAll('.node-editor-range input[type="range"]').forEach((input) => {
+  input.addEventListener('wheel', (event) => {
+    event.preventDefault();
+    const step = Number(input.step) || 1;
+    const next = Number(input.value) + (event.deltaY < 0 ? step : -step);
+    input.value = Math.min(Number(input.max), Math.max(Number(input.min), next));
+    input.dispatchEvent(new Event('input'));
+  }, { passive: false });
 });
 $('#captureUpload').addEventListener('change', async (event) => {
   const status = $('#captureUploadStatus');
@@ -1088,10 +1278,18 @@ $('#imageUpload').addEventListener('change', (event) => {
 });
 document.addEventListener('keydown', (event) => {
   if (event.target.matches('input,textarea,select')) return;
-  if (event.key === 'Escape' && state.pendingNodeClass) {
-    state.pendingNodeClass = null;
-    updateAddNodeControl();
-    return;
+  if (event.key === 'Escape') {
+    if (state.editingNode) {
+      state.editingNode = null;
+      renderNodeEditor();
+      return;
+    }
+    if (state.pendingNodeClass || !$('#nodeClassMenu').hidden) {
+      state.pendingNodeClass = null;
+      hideNodeClassMenu();
+      updateAddNodeControl();
+      return;
+    }
   }
   if (event.key === 'ArrowLeft') navigateCapture(-1);
   if (event.key === 'ArrowRight') navigateCapture(1);
