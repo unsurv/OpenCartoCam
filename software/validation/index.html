@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="./vendor/leaflet.css">
   <link rel="stylesheet" href="./styles.css">
 </head>
+<script src="https://unpkg.com/osm-api@4"></script>
 <body>
   <header class="app-header">
     <div class="brand">
@@ -26,6 +27,7 @@
       <label class="button" for="captureUpload" title="Select a capture CSV; images load automatically from its images directory">Load captures</label>
       <input id="captureUpload" type="file" accept=".csv,text/csv,image/*" multiple hidden>
       <button class="button primary" id="runValidation" type="button">Run validation</button>
+      <button class="button" id="uploadToOsm" type="button" disabled>Upload to OSM</button>
     </div>
   </header>
 
@@ -84,6 +86,7 @@
                 <button class="button compact icon" id="nodeEditorClose" type="button" aria-label="Close node editor">×</button>
               </span>
             </div>
+            <div class="node-editor-nearby" id="nodeEditNearby" hidden></div>
             <label class="node-editor-field">Type
               <select id="nodeEditType">
                 <option value="surveillance camera">surveillance camera</option>
@@ -117,6 +120,15 @@
                 <output id="nodeEditHeightValue" for="nodeEditHeight">—</output>
               </span>
             </label>
+            <label class="node-editor-field">Zone
+              <select id="nodeEditZone">
+                <option value="">—</option>
+                <option value="town">town</option>
+                <option value="building">building</option>
+                <option value="traffic">traffic</option>
+                <option value="parking">parking</option>
+              </select>
+            </label>
           </div>
           <div class="map-status" id="mapStatus"><span>Loading local map renderer…</span></div>
         </div>
@@ -140,7 +152,7 @@
         </div>
         <div class="table-scroll">
           <table class="suggestion-table">
-            <thead><tr><th>Class</th><th>Latitude</th><th>Longitude</th><th>Amount</th><th>Quality</th><th>Direction</th><th>Mount</th><th>Angle</th><th>Validated</th></tr></thead>
+            <thead><tr><th>Class</th><th>Latitude</th><th>Longitude</th><th>Amount</th><th>Quality</th><th>Direction</th><th>Mount</th><th>Angle</th><th>Zone</th><th>Validated</th></tr></thead>
             <tbody id="suggestionTableBody"></tbody>
           </table>
           <div class="empty-state" id="emptySuggestions" hidden>No multi-capture intersections found.</div>

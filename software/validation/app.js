@@ -10,6 +10,16 @@ const ANALYSIS = {
   mediumQualityResidualM: 5,
 };
 
+// OSM API integration: duplicate-check radius and OAuth client settings.
+// Everything runs against the OSM dev server; register an OAuth 2 application
+// on https://master.apis.dev.openstreetmap.org and paste its client ID below.
+const NEARBY_CAMERA_RADIUS_M = 5;
+const OSM_OAUTH = {
+  url: 'https://master.apis.dev.openstreetmap.org',
+  clientId: '',
+  scopes: ['read_prefs', 'write_api'],
+};
+
 const CLASS_STYLE = {
   'surveillance camera': { key: 'conventional', short: 'CAM', color: '#22d3ee' },
   'dome surveillance camera': { key: 'dome', short: 'DOME', color: '#fbbf24' },
@@ -31,6 +41,7 @@ const state = {
   orphans: [],
   selectedSuggestion: null,
   selectedOrphan: null,
+  nearbyByNode: new Map(),
 };
 
 const escapeHtml = (value) => String(value).replace(/[&<>'"]/g, (character) => ({
@@ -246,6 +257,7 @@ function calculateClassIntersections(classLabel, rows) {
       mount: '',
       angle: null,
       height: null,
+      zone: '',
       confirmed: false,
     };
   }).filter(Boolean);
@@ -525,6 +537,7 @@ function renderSuggestions() {
       <td>${formatNodeAngle(node.direction)}</td>
       <td>${escapeHtml(node.mount || '—')}</td>
       <td>${formatNodeAngle(node.angle)}</td>
+      <td>${escapeHtml(node.zone || '—')}</td>
       <td><button type="button" class="confirm-node ${node.confirmed ? 'confirmed' : ''}" data-confirm="${node.id}"
         ${isNodeComplete(node) ? '' : 'disabled'} title="${confirmHint(node)}">✓</button></td>
     </tr>`).join('');
@@ -544,6 +557,7 @@ function renderSuggestions() {
       toggleNodeConfirmed(button.dataset.confirm);
     });
   });
+  $('#uploadToOsm').disabled = !state.suggestions.some((node) => node.confirmed);
 }
 
 // Orphan list: detections not linked to any suggested node.
@@ -670,6 +684,7 @@ function selectSuggestion(id, { edit = false } = {}) {
   renderOrphans();
   renderCapture();
   if (state.mapReady) map.panTo([suggestion.lat, suggestion.lon], { animate: false });
+  refreshNearbyCameras(suggestion);
 }
 
 // "Add node" flow: class menu opened from the toolbar button or a map right-click.
@@ -728,6 +743,7 @@ function addManualSuggestion(classLabel, latLng) {
     mount: '',
     angle: 15,
     height: 5,
+    zone: '',
     confirmed: false,
     manual: true,
   };
@@ -766,7 +782,7 @@ function toggleNodeConfirmed(id) {
   renderNodeEditor();
 }
 
-// Node editor window (type, direction, mount, angle, height).
+// Node editor window (type, direction, mount, angle, height, zone).
 function editingNode() {
   return state.suggestions.find((node) => node.id === state.editingNode) || null;
 }
@@ -794,6 +810,7 @@ function renderNodeEditor() {
   $('#nodeEditDirection').value = node.direction ?? 0;
   $('#nodeEditDirectionValue').textContent = formatNodeAngle(node.direction);
   mountSelect.value = node.mount ?? '';
+  $('#nodeEditZone').value = node.zone ?? '';
   $('#nodeEditAngle').value = node.angle ?? 15;
   $('#nodeEditAngleValue').textContent = formatNodeAngle(node.angle);
   $('#nodeEditHeight').value = node.height ?? 5;
@@ -803,6 +820,15 @@ function renderNodeEditor() {
   confirmButton.disabled = !isNodeComplete(node);
   confirmButton.classList.toggle('confirmed', Boolean(node.confirmed));
   confirmButton.title = confirmHint(node);
+  const nearbyElement = $('#nodeEditNearby');
+  const nearby = state.nearbyByNode.get(node.id);
+  nearbyElement.hidden = !window.OSM;
+  nearbyElement.classList.toggle('warning', Boolean(nearby?.length));
+  nearbyElement.textContent = nearby === undefined
+    ? 'Checking OSM for existing cameras nearby…'
+    : nearby.length
+      ? `${nearby.length} existing camera${nearby.length === 1 ? '' : 's'} within ${NEARBY_CAMERA_RADIUS_M} m in OSM — check for duplicates`
+      : `No existing cameras within ${NEARBY_CAMERA_RADIUS_M} m in OSM`;
 }
 
 function navigateSuggestion(direction) {
@@ -886,6 +912,7 @@ let suggestionLayer = null;
 let viewingAngleLayer = null;
 let raysLayer = null;
 let selectedRayLayer = null;
+let nearbyLayer = null;
 let selectedCaptureMarker = null;
 const captureMarkers = new Map();
 const suggestionMarkers = new Map();
@@ -1026,6 +1053,7 @@ function refreshMap() {
   viewingAngleLayer = null;
   raysLayer = null;
   selectedRayLayer = null;
+  nearbyLayer = null;
   selectedCaptureMarker = null;
   captureMarkers.clear();
   suggestionMarkers.clear();
@@ -1071,6 +1099,7 @@ function initMap() {
     raysLayer = L.layerGroup().addTo(map);
     selectedRayLayer = L.layerGroup().addTo(map);
     captureLayer = L.layerGroup().addTo(map);
+    nearbyLayer = L.layerGroup().addTo(map);
 
     captures.forEach((capture) => {
       const marker = L.circleMarker(captureLatLng(capture), {
@@ -1139,6 +1168,110 @@ function updateMapSelection() {
     const node = state.suggestions.find((item) => item.id === id);
     if (node) marker.setIcon(suggestionIcon(node, id === state.selectedSuggestion));
   });
+  renderNearbyMarkers();
+}
+
+// OSM API: nearby-camera duplicate check and upload of validated nodes.
+const isSurveillanceCamera = (tags = {}) => tags.man_made === 'surveillance' || tags['surveillance:type'] === 'camera';
+
+function osmTagsForNode(node) {
+  const dome = classStyle(node.classLabel).key === 'dome';
+  const tags = {
+    man_made: 'surveillance',
+    'surveillance:type': 'camera',
+    'camera:type': dome ? 'dome' : 'fixed',
+  };
+  if (node.mount) tags['camera:mount'] = node.mount;
+  if (node.zone) tags['surveillance:zone'] = node.zone;
+  if (!dome && Number.isFinite(node.direction)) tags['camera:direction'] = String(Math.round(node.direction));
+  if (!dome && Number.isFinite(node.angle)) tags['camera:angle'] = String(Math.round(node.angle));
+  if (Number.isFinite(node.height)) tags.height = node.height.toFixed(1);
+  return tags;
+}
+
+async function queryNearbyCameras(node) {
+  const deltaLat = NEARBY_CAMERA_RADIUS_M / 111320;
+  const deltaLon = deltaLat / Math.cos((node.lat * Math.PI) / 180);
+  const elements = await OSM.getMapData([node.lon - deltaLon, node.lat - deltaLat, node.lon + deltaLon, node.lat + deltaLat]);
+  return elements.filter((element) => element.type === 'node' && isSurveillanceCamera(element.tags));
+}
+
+function refreshNearbyCameras(node) {
+  if (!window.OSM || typeof OSM.getMapData !== 'function') return;
+  state.nearbyByNode.delete(node.id);
+  queryNearbyCameras(node).then((found) => {
+    state.nearbyByNode.set(node.id, found);
+    renderNearbyMarkers();
+    if (state.editingNode === node.id) renderNodeEditor();
+  }).catch((error) => console.warn('Nearby camera query failed', error));
+}
+
+function renderNearbyMarkers() {
+  if (!map || !nearbyLayer) return;
+  nearbyLayer.clearLayers();
+  const found = state.nearbyByNode.get(state.selectedSuggestion);
+  if (!found) return;
+  found.forEach((element) => {
+    const tagLines = Object.entries(element.tags || {}).map(([key, value]) => `${key}=${value}`).join('<br>');
+    L.circleMarker([element.lat, element.lon], {
+      radius: 5, color: '#f43f5e', weight: 2, dashArray: '3 3', fillColor: '#0c1220', fillOpacity: 0.9,
+    }).addTo(nearbyLayer).bindTooltip(
+      `<strong>Existing OSM <a href="${OSM_OAUTH.url}/node/${element.id}" target="_blank" rel="noopener">node/${element.id}</a></strong><br>${tagLines}`,
+      { direction: 'top', offset: [0, -6] },
+    );
+  });
+}
+
+async function uploadToOsm() {
+  const setStatus = (text) => { $('#lastValidated').textContent = text; };
+  if (!window.OSM) {
+    setStatus('OSM API library not loaded · check the unpkg script tag');
+    return;
+  }
+  if (!OSM_OAUTH.clientId) {
+    setStatus('Set OSM_OAUTH.clientId in app.js · register an OAuth app on the OSM dev server');
+    return;
+  }
+  const nodes = state.suggestions.filter((node) => node.confirmed);
+  if (!nodes.length) {
+    setStatus('No validated nodes · confirm nodes with the ✓ checkmark first');
+    return;
+  }
+  const button = $('#uploadToOsm');
+  button.disabled = true;
+  try {
+    if (!OSM.isLoggedIn()) {
+      button.textContent = 'Logging in…';
+      await OSM.login({
+        mode: 'popup',
+        url: OSM_OAUTH.url,
+        clientId: OSM_OAUTH.clientId,
+        redirectUrl: window.location.href.split(/[?#]/)[0],
+        scopes: OSM_OAUTH.scopes,
+      });
+    }
+    button.textContent = 'Uploading…';
+    await OSM.uploadChangeset({
+      comment: 'Add surveillance cameras from OpenCartoCam validation',
+      created_by: 'OpenCartoCam validation tool',
+      source: 'survey',
+    }, {
+      create: nodes.map((node, index) => ({
+        type: 'node',
+        id: -(index + 1),
+        lat: node.lat,
+        lon: node.lon,
+        tags: osmTagsForNode(node),
+      })),
+    });
+    setStatus(`Uploaded ${nodes.length} node(s) to the OSM dev server · ${new Date().toLocaleTimeString()}`);
+  } catch (error) {
+    console.error(error);
+    setStatus(`OSM upload failed · ${error.message}`);
+  } finally {
+    button.textContent = 'Upload to OSM';
+    renderSuggestions();
+  }
 }
 
 // Downloadable JSON validation report.
@@ -1209,6 +1342,7 @@ $('#suggestionClassFilter').addEventListener('change', (event) => {
   updateMapSelection();
 });
 $('#clearSuggestionFilter').addEventListener('click', clearAnalysisFilter);
+$('#uploadToOsm').addEventListener('click', uploadToOsm);
 $('#exportReport').addEventListener('click', exportValidationReport);
 $('#addNodeButton').addEventListener('click', () => {
   if ($('#nodeClassMenu').hidden) {
@@ -1256,6 +1390,12 @@ $('#nodeEditMount').addEventListener('change', (event) => {
   const node = editingNode();
   if (!node) return;
   node.mount = event.target.value;
+  renderSuggestions();
+});
+$('#nodeEditZone').addEventListener('change', (event) => {
+  const node = editingNode();
+  if (!node) return;
+  node.zone = event.target.value;
   renderSuggestions();
 });
 $('#nodeEditAngle').addEventListener('input', (event) => {
@@ -1347,6 +1487,7 @@ document.addEventListener('keydown', (event) => {
 });
 
 // Boot with an empty dataset; all views render their empty states.
+if (window.OSM) OSM.configure({ url: OSM_OAUTH.url });
 $('#captureCount').textContent = captures.length;
 $('#detectionCount').textContent = normalized.length;
 validateDataset();

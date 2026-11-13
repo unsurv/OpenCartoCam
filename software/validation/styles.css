@@ -143,6 +143,8 @@ h1{font-size:18px;line-height:1.25;letter-spacing:.04em;font-weight:650}
 .confirm-node:disabled { color: var(--muted); opacity: .45; cursor: not-allowed; }
 .confirm-node.confirmed { background: var(--success); border-color: var(--success); color: var(--p-ink-950); }
 .node-editor-actions { display: flex; align-items: center; gap: 6px; }
+.node-editor-nearby{font-size:10px;line-height:1.4;color:var(--muted)}
+.node-editor-nearby.warning{color:var(--warning)}
 
 .orphan-section { border-top: 1px solid var(--border); padding: 14px 16px 16px; }
 .orphan-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
