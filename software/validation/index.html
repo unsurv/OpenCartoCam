@@ -9,6 +9,14 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230c1220'/%3E%3Ccircle cx='16' cy='16' r='10' fill='none' stroke='%2322d3ee' stroke-width='2'/%3E%3Cpath d='M6 16h20M16 6v20' stroke='%2322d3ee'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="./vendor/leaflet.css">
   <link rel="stylesheet" href="./styles.css">
+  <script>
+    // osm-api-js popup-mode landing handler: when the OAuth popup redirects back
+    // here with ?code=…, forward the URL to the opener window and close.
+    if (new URLSearchParams(location.search).has('code')) {
+      new BroadcastChannel('osm-api-auth-complete').postMessage(location.href);
+      window.close();
+    }
+  </script>
 </head>
 <script src="https://unpkg.com/osm-api@4"></script>
 <body>
@@ -27,6 +35,7 @@
       <label class="button" for="captureUpload" title="Select a capture CSV; images load automatically from its images directory">Load captures</label>
       <input id="captureUpload" type="file" accept=".csv,text/csv,image/*" multiple hidden>
       <button class="button primary" id="runValidation" type="button">Run validation</button>
+      <button class="button" id="osmLogin" type="button">OSM login</button>
       <button class="button" id="uploadToOsm" type="button" disabled>Upload to OSM</button>
     </div>
   </header>
@@ -190,6 +199,36 @@
       </article>
     </section>
   </main>
+
+  <div class="upload-dialog" id="loginDialog" hidden>
+    <div class="upload-dialog-box">
+      <div class="node-editor-header"><strong>OSM login</strong></div>
+      <p class="dialog-hint">Client ID of an OAuth 2 application registered on the OSM dev server (Settings → OAuth 2 applications, public client). The app must allow this exact redirect URI: <code id="loginRedirectUri"></code></p>
+      <label class="node-editor-field">Client ID
+        <input id="loginClientId" type="text" placeholder="OAuth client ID" autocomplete="off">
+      </label>
+      <div class="upload-dialog-actions">
+        <button class="button compact" id="loginCancel" type="button">Cancel</button>
+        <button class="button compact primary" id="loginConfirm" type="button">Login</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="upload-dialog" id="uploadDialog" hidden>
+    <div class="upload-dialog-box">
+      <div class="node-editor-header"><strong>Upload to OSM</strong></div>
+      <label class="node-editor-field">Changeset comment
+        <input id="uploadComment" type="text" value="Add surveillance cameras from OpenCartoCam validation">
+      </label>
+      <label class="node-editor-field">Source
+        <input id="uploadSource" type="text" value="survey">
+      </label>
+      <div class="upload-dialog-actions">
+        <button class="button compact" id="uploadCancel" type="button">Cancel</button>
+        <button class="button compact primary" id="uploadConfirm" type="button">Upload</button>
+      </div>
+    </div>
+  </div>
 
   <footer class="app-footer">
     Map data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> · Camera viewing-angle rendering adapted from <a href="https://github.com/khris78/osmcamera">khris78/osmcamera</a>

@@ -3,6 +3,8 @@
 venv/
 env/
 
+.env
+
 # Sphinx build output
 docs/_build/
 
@@ -32,3 +34,5 @@ Thumbs.db
 
 # KiCad
 *.lck
+
+config.js

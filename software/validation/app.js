@@ -11,14 +11,16 @@ const ANALYSIS = {
 };
 
 // OSM API integration: duplicate-check radius and OAuth client settings.
-// Everything runs against the OSM dev server; register an OAuth 2 application
-// on https://master.apis.dev.openstreetmap.org and paste its client ID below.
+// Everything runs against the OSM dev server; the OAuth client ID comes from
+// the ${OSM_CLIENT_ID} env substitution, or from the login dialog (cached in
+// localStorage) when the placeholder is not substituted.
 const NEARBY_CAMERA_RADIUS_M = 5;
 const OSM_OAUTH = {
   url: 'https://master.apis.dev.openstreetmap.org',
   clientId: '',
   scopes: ['read_prefs', 'write_api'],
 };
+if (OSM_OAUTH.clientId.includes('${')) OSM_OAUTH.clientId = localStorage.getItem('osmClientId') || '';
 
 const CLASS_STYLE = {
   'surveillance camera': { key: 'conventional', short: 'CAM', color: '#22d3ee' },
@@ -1222,39 +1224,96 @@ function renderNearbyMarkers() {
   });
 }
 
-async function uploadToOsm() {
+// OSM login: the button toggles login/logout; ensureOsmLogin is shared with the upload flow.
+function updateLoginButton() {
+  const button = $('#osmLogin');
+  if (button) button.textContent = window.OSM && OSM.isLoggedIn() ? 'OSM logout' : 'OSM login';
+}
+
+// Ask for the OAuth client ID before every login; prefilled with the current value.
+function requestClientId() {
+  const dialog = $('#loginDialog');
+  const input = $('#loginClientId');
+  const confirmButton = $('#loginConfirm');
+  const cancelButton = $('#loginCancel');
+  return new Promise((resolve) => {
+    const finish = (value) => {
+      dialog.hidden = true;
+      confirmButton.removeEventListener('click', onConfirm);
+      cancelButton.removeEventListener('click', onCancel);
+      input.removeEventListener('keydown', onKey);
+      resolve(value);
+    };
+    const onConfirm = () => finish(input.value.trim());
+    const onCancel = () => finish(null);
+    const onKey = (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        onConfirm();
+      }
+    };
+    confirmButton.addEventListener('click', onConfirm);
+    cancelButton.addEventListener('click', onCancel);
+    input.addEventListener('keydown', onKey);
+    input.value = OSM_OAUTH.clientId;
+    $('#loginRedirectUri').textContent = window.location.href.split(/[?#]/)[0];
+    dialog.hidden = false;
+    input.focus();
+  });
+}
+
+async function ensureOsmLogin() {
+  if (!window.OSM) throw new Error('OSM API library not loaded · check the unpkg script tag');
+  if (!OSM.isLoggedIn()) {
+    const clientId = await requestClientId();
+    if (!clientId) throw new Error('Login cancelled · no OAuth client ID provided');
+    OSM_OAUTH.clientId = clientId;
+    localStorage.setItem('osmClientId', clientId);
+    await OSM.login({
+      mode: 'popup',
+      clientId: OSM_OAUTH.clientId,
+      redirectUrl: window.location.href.split(/[?#]/)[0],
+      scopes: OSM_OAUTH.scopes,
+    });
+  }
+  updateLoginButton();
+}
+
+// Upload dialog: the header button validates preconditions, the dialog collects
+// changeset comment and source, then uploadToOsm runs the actual upload.
+function openUploadDialog() {
   const setStatus = (text) => { $('#lastValidated').textContent = text; };
   if (!window.OSM) {
     setStatus('OSM API library not loaded · check the unpkg script tag');
     return;
   }
-  if (!OSM_OAUTH.clientId) {
-    setStatus('Set OSM_OAUTH.clientId in app.js · register an OAuth app on the OSM dev server');
+  if (!state.suggestions.some((node) => node.confirmed)) {
+    setStatus('No validated nodes · confirm nodes with the ✓ checkmark first');
     return;
   }
+  $('#uploadDialog').hidden = false;
+  $('#uploadComment').focus();
+}
+
+async function uploadToOsm() {
+  const setStatus = (text) => { $('#lastValidated').textContent = text; };
   const nodes = state.suggestions.filter((node) => node.confirmed);
   if (!nodes.length) {
     setStatus('No validated nodes · confirm nodes with the ✓ checkmark first');
     return;
   }
+  const comment = $('#uploadComment').value.trim() || 'Add surveillance cameras from OpenCartoCam validation';
+  const source = $('#uploadSource').value.trim() || 'survey';
   const button = $('#uploadToOsm');
   button.disabled = true;
   try {
-    if (!OSM.isLoggedIn()) {
-      button.textContent = 'Logging in…';
-      await OSM.login({
-        mode: 'popup',
-        url: OSM_OAUTH.url,
-        clientId: OSM_OAUTH.clientId,
-        redirectUrl: window.location.href.split(/[?#]/)[0],
-        scopes: OSM_OAUTH.scopes,
-      });
-    }
+    button.textContent = 'Logging in…';
+    await ensureOsmLogin();
     button.textContent = 'Uploading…';
     await OSM.uploadChangeset({
-      comment: 'Add surveillance cameras from OpenCartoCam validation',
+      comment,
       created_by: 'OpenCartoCam validation tool',
-      source: 'survey',
+      source,
     }, {
       create: nodes.map((node, index) => ({
         type: 'node',
@@ -1263,6 +1322,8 @@ async function uploadToOsm() {
         lon: node.lon,
         tags: osmTagsForNode(node),
       })),
+      modify: [],
+      delete: [],
     });
     setStatus(`Uploaded ${nodes.length} node(s) to the OSM dev server · ${new Date().toLocaleTimeString()}`);
   } catch (error) {
@@ -1342,7 +1403,33 @@ $('#suggestionClassFilter').addEventListener('change', (event) => {
   updateMapSelection();
 });
 $('#clearSuggestionFilter').addEventListener('click', clearAnalysisFilter);
-$('#uploadToOsm').addEventListener('click', uploadToOsm);
+$('#osmLogin').addEventListener('click', async () => {
+  if (window.OSM && OSM.isLoggedIn()) {
+    OSM.logout();
+    updateLoginButton();
+    $('#lastValidated').textContent = 'Logged out of OSM';
+    return;
+  }
+  const button = $('#osmLogin');
+  button.disabled = true;
+  button.textContent = 'Logging in…';
+  try {
+    await ensureOsmLogin();
+    $('#lastValidated').textContent = `Logged in to OSM dev server · ${new Date().toLocaleTimeString()}`;
+  } catch (error) {
+    console.error(error);
+    $('#lastValidated').textContent = `OSM login failed · ${error.message}`;
+  } finally {
+    button.disabled = false;
+    updateLoginButton();
+  }
+});
+$('#uploadToOsm').addEventListener('click', openUploadDialog);
+$('#uploadCancel').addEventListener('click', () => { $('#uploadDialog').hidden = true; });
+$('#uploadConfirm').addEventListener('click', () => {
+  $('#uploadDialog').hidden = true;
+  uploadToOsm();
+});
 $('#exportReport').addEventListener('click', exportValidationReport);
 $('#addNodeButton').addEventListener('click', () => {
   if ($('#nodeClassMenu').hidden) {
@@ -1462,6 +1549,14 @@ $('#imageUpload').addEventListener('change', (event) => {
 document.addEventListener('keydown', (event) => {
   if (event.target.matches('input,textarea,select')) return;
   if (event.key === 'Escape') {
+    if (!$('#loginDialog').hidden) {
+      $('#loginCancel').click();
+      return;
+    }
+    if (!$('#uploadDialog').hidden) {
+      $('#uploadDialog').hidden = true;
+      return;
+    }
     if (state.editingNode) {
       state.editingNode = null;
       renderNodeEditor();
@@ -1487,7 +1582,8 @@ document.addEventListener('keydown', (event) => {
 });
 
 // Boot with an empty dataset; all views render their empty states.
-if (window.OSM) OSM.configure({ url: OSM_OAUTH.url });
+if (window.OSM) OSM.configure({ apiUrl: OSM_OAUTH.url });
+updateLoginButton();
 $('#captureCount').textContent = captures.length;
 $('#detectionCount').textContent = normalized.length;
 validateDataset();
