@@ -1291,6 +1291,8 @@ function openUploadDialog() {
     setStatus('No validated nodes · confirm nodes with the ✓ checkmark first');
     return;
   }
+  $('#uploadConsent').checked = false;
+  $('#uploadConfirm').disabled = true;
   $('#uploadDialog').hidden = false;
   $('#uploadComment').focus();
 }
@@ -1426,6 +1428,9 @@ $('#osmLogin').addEventListener('click', async () => {
 });
 $('#uploadToOsm').addEventListener('click', openUploadDialog);
 $('#uploadCancel').addEventListener('click', () => { $('#uploadDialog').hidden = true; });
+$('#uploadConsent').addEventListener('change', (event) => {
+  $('#uploadConfirm').disabled = !event.target.checked;
+});
 $('#uploadConfirm').addEventListener('click', () => {
   $('#uploadDialog').hidden = true;
   uploadToOsm();
