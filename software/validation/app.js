@@ -541,7 +541,7 @@ function renderSuggestions() {
       <td>${formatNodeAngle(node.angle)}</td>
       <td>${escapeHtml(node.zone || '—')}</td>
       <td><button type="button" class="confirm-node ${node.confirmed ? 'confirmed' : ''}" data-confirm="${node.id}"
-        ${isNodeComplete(node) ? '' : 'disabled'} title="${confirmHint(node)}">✓</button></td>
+        title="${confirmHint(node)}">✓</button></td>
     </tr>`).join('');
   document.querySelectorAll('#suggestionTableBody tr').forEach((element) => {
     const activate = () => selectSuggestion(element.dataset.suggestion, { edit: true });
@@ -761,27 +761,37 @@ function addManualSuggestion(classLabel, latLng) {
   selectSuggestion(node.id);
 }
 
-// A node can only be confirmed once all data for its viewing angle is set.
+// Validation adopts the editor's prepopulated defaults for any unset
+// viewing-angle values, so the table only fills in on edit or validation.
 const isNodeComplete = (node) => (classStyle(node.classLabel).key === 'dome'
   ? Number.isFinite(node.height)
   : Number.isFinite(node.direction) && Number.isFinite(node.angle) && Number.isFinite(node.height));
 
 function confirmHint(node) {
-  if (isNodeComplete(node)) return node.confirmed ? 'Mark as not validated' : 'Mark as validated';
-  const missing = classStyle(node.classLabel).key === 'dome' ? 'height' : 'direction, angle and height';
-  return `Set ${missing} to enable validation`;
+  if (node.confirmed) return 'Mark as not validated';
+  if (isNodeComplete(node)) return 'Mark as validated';
+  return 'Mark as validated · unset values adopt the editor defaults (direction 0°, angle 15°, height 5 m)';
 }
 
 function syncNodeConfirmation(node) {
   if (!isNodeComplete(node)) node.confirmed = false;
 }
 
+function adoptEditorDefaults(node) {
+  const dome = classStyle(node.classLabel).key === 'dome';
+  if (!dome && !Number.isFinite(node.direction)) node.direction = 0;
+  if (!dome && !Number.isFinite(node.angle)) node.angle = 15;
+  if (!Number.isFinite(node.height)) node.height = 5;
+}
+
 function toggleNodeConfirmed(id) {
   const node = state.suggestions.find((item) => item.id === id);
-  if (!node || !isNodeComplete(node)) return;
+  if (!node) return;
+  if (!node.confirmed) adoptEditorDefaults(node);
   node.confirmed = !node.confirmed;
   renderSuggestions();
   renderNodeEditor();
+  rebuildViewingAngles();
 }
 
 // Node editor window (type, direction, mount, angle, height, zone).
@@ -810,16 +820,16 @@ function renderNodeEditor() {
   $('#nodeEditorTitle').textContent = `Node ${node.id}`;
   typeSelect.value = node.classLabel;
   $('#nodeEditDirection').value = node.direction ?? 0;
-  $('#nodeEditDirectionValue').textContent = formatNodeAngle(node.direction);
+  $('#nodeEditDirectionValue').textContent = formatNodeAngle(node.direction ?? 0);
   mountSelect.value = node.mount ?? '';
   $('#nodeEditZone').value = node.zone ?? '';
   $('#nodeEditAngle').value = node.angle ?? 15;
-  $('#nodeEditAngleValue').textContent = formatNodeAngle(node.angle);
+  $('#nodeEditAngleValue').textContent = formatNodeAngle(node.angle ?? 15);
   $('#nodeEditHeight').value = node.height ?? 5;
-  $('#nodeEditHeightValue').textContent = formatNodeHeight(node.height);
+  $('#nodeEditHeightValue').textContent = formatNodeHeight(node.height ?? 5);
   syncNodeConfirmation(node);
   const confirmButton = $('#nodeEditConfirm');
-  confirmButton.disabled = !isNodeComplete(node);
+  confirmButton.disabled = false;
   confirmButton.classList.toggle('confirmed', Boolean(node.confirmed));
   confirmButton.title = confirmHint(node);
   const nearbyElement = $('#nodeEditNearby');
