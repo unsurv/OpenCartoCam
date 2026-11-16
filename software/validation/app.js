@@ -537,8 +537,9 @@ function renderSuggestions() {
       <td>${node.support} captures</td>
       <td class="quality-${node.quality.toLowerCase()}">${node.quality}</td>
       <td>${formatNodeAngle(node.direction)}</td>
-      <td>${escapeHtml(node.mount || '—')}</td>
+      <td>${formatNodeHeight(node.height)}</td>
       <td>${formatNodeAngle(node.angle)}</td>
+      <td>${escapeHtml(node.mount || '—')}</td>
       <td>${escapeHtml(node.zone || '—')}</td>
       <td><button type="button" class="confirm-node ${node.confirmed ? 'confirmed' : ''}" data-confirm="${node.id}"
         title="${confirmHint(node)}">✓</button></td>
