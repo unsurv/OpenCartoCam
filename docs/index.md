@@ -5,6 +5,7 @@
 :glob:
 
 hardware/hardware
+software/software
 grant/grant
 ```
 
