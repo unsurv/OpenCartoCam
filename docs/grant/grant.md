@@ -44,21 +44,33 @@ Development of the physical systems, from PCB design to camera integration and s
 Core software implementation, including dewarping, sensor/software integration, and privacy-aware mapping output.
 
 - Dewarp method established
-- Hardware-accelerated model running  
+- Hardware-accelerated model running ✅
+  - see [object detection](#on-device-object-detection)  
 - Software sensor integration  
 - Privacy features (face, license plate blurring)  
 - Output generation
-- Browser-based evaluation software developed
-- OSM integration
-- Custom object detection model trained and integrated
+- Browser-based evaluation software developed ✅
+  - see [validation software docs](../software/validation.md)
+- OSM integration ✅
+  - see [OSM dev changeset](https://master.apis.dev.openstreetmap.org/changeset/727247) created from the validation software
+- Custom object detection model trained and integrated ✅
+  - see [object detection](#on-device-object-detection) 
 - Software docs
 
 ## Supporting Activities
 
 Tasks supporting data collection, preparation, and documentation.
 
-- Gathering images for retraining (work + travelling expenses)
-- Image preparation (binning, labelling, scaling)
+- Gathering images for retraining (work + travelling expenses) ✅
+  - gathered and labelled 2000+ cameras via various trips
+  - relevant changesets
+    - [1](https://www.openstreetmap.org/changeset/190149286#map=16/51.95127/7.64341)
+    - [2](https://www.openstreetmap.org/changeset/190399920#map=19/50.932004/6.962495)
+    - [3](https://www.openstreetmap.org/changeset/190399328#map=17/50.926840/6.966148)
+    - [4](https://www.openstreetmap.org/changeset/190397829#map=15/50.93356/6.94728)
+    - [5](https://www.openstreetmap.org/changeset/190388395#map=16/50.94293/6.95097)
+- Image preparation (binning, labelling, scaling) ✅
+  - see [custom dataset](#custom-dataset)
 
 ## Final release
 
@@ -95,5 +107,17 @@ Tasks supporting data collection, preparation, and documentation.
 ## 3D preview back
 
 ``` {image} ../hardware/_static/3D_preview_back.PNG
+
+```
+
+## Custom dataset
+
+``` {image} ./_static/ultralytics.png
+
+```
+
+## On device object detection
+
+``` {image} ./_static/screenshot_on_device_obj_detection.png
 
 ```
